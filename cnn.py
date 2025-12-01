@@ -8,10 +8,14 @@ dataset_path = "./datasets/"
 train_path = "Kim_2018_Train.csv"
 test_path = "Kim_2018_Test.csv"
 
-train_df= pd.read_csv(dataset_path + train_path)
-train_df = train_df.drop(columns=["Context Sequence","20 bp guide sequence (5' to 3')","Indel frequency (% Background)","Indel read count (Background)","Total read count (Background)","Indel freqeuncy (Cpf1 delivered %)", "Indel read count (Cpf1 delivered)","Total read count (Cpf1 delivered)"], axis=1)
 
+def filter_df(df):
+    df = df.drop(columns=["50 bp synthetic target and target context sequence","20 bp guide sequence (5' to 3')","Indel frequency (% Background)","Indel read count (Background)","Total read count (Background)","Indel freqeuncy (Cpf1 delivered %)", "Indel read count (Cpf1 delivered)","Total read count (Cpf1 delivered)"], axis=1)
+    return df
 
-test_df= pd.read_csv(dataset_path + test_path)
-test_df = test_df.drop(columns=["Context Sequence","20 bp guide sequence (5' to 3')","Indel frequency (% Background)","Indel read count (Background)","Total read count (Background)","Indel freqeuncy (Cpf1 delivered %)", "Indel read count (Cpf1 delivered)","Total read count (Cpf1 delivered)"], axis=1)
+train_df= filter_df(pd.read_csv(dataset_path + train_path))
+
+test_df= filter_df(pd.read_csv(dataset_path + test_path))
+
 print(test_df.head())
+
