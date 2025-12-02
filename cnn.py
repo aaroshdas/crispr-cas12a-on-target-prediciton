@@ -28,11 +28,17 @@ temp_train_df= filter_df(pd.read_csv(dataset_path + train_path))
 
 temp_test_df= filter_df(pd.read_csv(dataset_path + test_path))
 
-combined_df = pd.concat([temp_train_df,temp_test_df])
+COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
 
-print("total samples", len(combined_df))
+print(COMBINED_DF.head())
 
-print(combined_df.head())
+TARGET_MEAN = COMBINED_DF['Indel frequency'] .mean()
+TARGET_STD = COMBINED_DF['Indel frequency'].std()
+
+COMBINED_DF['Indel frequency'] = (COMBINED_DF['Indel frequency'] - TARGET_MEAN) / TARGET_STD
+
+print("total samples", len(COMBINED_DF))
+
 
 def convert_to_one_hot(seq):
     mapping = {'A': [1, 0, 0, 0], 'C': [0, 1, 0, 0], 'G': [0, 0, 1, 0], 'T': [0, 0, 0, 1]}
@@ -43,14 +49,14 @@ def convert_to_one_hot(seq):
 
 # print(convert_to_one_hot(test_df.loc[0, "Input seq"]))
 
-train_sequences = combined_df["Input seq"].values
+train_sequences = COMBINED_DF["Input seq"].values
 raw_x_vals = np.array([convert_to_one_hot(seq) for seq in train_sequences])
 
-raw_y_vals = combined_df["Indel frequency"].values.astype(float)
+raw_y_vals = COMBINED_DF["Indel frequency"].values.astype(float)
 
 
 x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_size=0.15)
-print(x_train.shape, x_val.shape)
+print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
 
 
 model = models.Sequential([
@@ -70,7 +76,7 @@ model = models.Sequential([
             kernel_regularizer=regularizers.l2(1e-4)),
     
     #layers.BatchNormalization(),
-    #layers.GlobalMaxPooling1D(),
+    layers.GlobalMaxPooling1D(),
 
     layers.Dense(64, activation='relu'),
     layers.Dropout(0.3),
@@ -78,5 +84,32 @@ model = models.Sequential([
     layers.Dense(1, activation='linear')
 ])
 
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+model.summary()
 
 
+
+
+
+def make_prediction(model, seq):
+    temp_batch_seq = convert_to_one_hot(seq)[np.newaxis, ...]
+    pred = model.predict(temp_batch_seq)
+    print(f'\n {pred * TARGET_STD + TARGET_MEAN}')
+
+
+make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT") #14.711302
+make_prediction(model, "AAACTTTAAAAATCTTTTCTGCCAGATCTCCAGA") #0.238095
+make_prediction(model, "TTGTTTTAAAACAGGTTCTGTACTTGATCTCTCC") #88.079746
+
+
+model.fit(x_train, y_train, epochs=50, batch_size =32, validation_data=(x_val, y_val))
+
+model.save("cnn_model.keras")
+
+
+print("")
+loss, accuracy = model.evaluate(x_val, y_val)
+
+make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT")
+make_prediction(model, "AAACTTTAAAAATCTTTTCTGCCAGATCTCCAGA")
+make_prediction(model, "TTGTTTTAAAACAGGTTCTGTACTTGATCTCTCC")
