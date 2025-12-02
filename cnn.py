@@ -65,7 +65,7 @@ model = models.Sequential([
             filters=64, 
             kernel_size=5, 
             activation='relu', 
-            kernel_regularizer=regularizers.l2(0.001)),
+            kernel_regularizer=regularizers.l2(0.0001)),
     # layers.BatchNormalization()
     layers.Dropout(0.2),
 
@@ -73,9 +73,9 @@ model = models.Sequential([
             filters=128,
             kernel_size=3,
             activation='relu',
-            kernel_regularizer=regularizers.l2(1e-4)),
+            kernel_regularizer=regularizers.l2(0.0001)),
     
-    #layers.BatchNormalization(),
+    # layers.BatchNormalization(),
     layers.GlobalMaxPooling1D(),
 
     layers.Dense(64, activation='relu'),
@@ -93,7 +93,7 @@ model.summary()
 
 def make_prediction(model, seq):
     temp_batch_seq = convert_to_one_hot(seq)[np.newaxis, ...]
-    pred = model.predict(temp_batch_seq)
+    pred = model.predict(temp_batch_seq, verbose=False)
     print(f'\n {pred * TARGET_STD + TARGET_MEAN}')
 
 
@@ -105,10 +105,6 @@ make_prediction(model, "TTGTTTTAAAACAGGTTCTGTACTTGATCTCTCC") #88.079746
 model.fit(x_train, y_train, epochs=50, batch_size =32, validation_data=(x_val, y_val))
 
 model.save("cnn_model.keras")
-
-
-print("")
-loss, accuracy = model.evaluate(x_val, y_val)
 
 make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT")
 make_prediction(model, "AAACTTTAAAAATCTTTTCTGCCAGATCTCCAGA")
