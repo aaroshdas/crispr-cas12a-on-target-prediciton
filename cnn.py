@@ -2,7 +2,7 @@
 #conda activate cc12on
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras import layers, models
+from tensorflow.keras import layers, models, regularizers
 from sklearn.model_selection import train_test_split
 
 import numpy as np
@@ -51,6 +51,32 @@ raw_y_vals = combined_df["Indel frequency"].values.astype(float)
 
 x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_size=0.15)
 print(x_train.shape, x_val.shape)
+
+
+model = models.Sequential([
+    layers.Input(shape=(x_train.shape[1], 4)),
+    layers.Conv1D(
+            filters=64, 
+            kernel_size=5, 
+            activation='relu', 
+            kernel_regularizer=regularizers.l2(0.001)),
+    # layers.BatchNormalization()
+    layers.Dropout(0.2),
+
+    layers.Conv1D(
+            filters=128,
+            kernel_size=3,
+            activation='relu',
+            kernel_regularizer=regularizers.l2(1e-4)),
+    
+    #layers.BatchNormalization(),
+    #layers.GlobalMaxPooling1D(),
+
+    layers.Dense(64, activation='relu'),
+    layers.Dropout(0.3),
+    
+    layers.Dense(1, activation='linear')
+])
 
 
 
