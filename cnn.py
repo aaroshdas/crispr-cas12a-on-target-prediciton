@@ -103,7 +103,7 @@ make_prediction(model, "AAACTTTAAAAATCTTTTCTGCCAGATCTCCAGA") #0.238095
 make_prediction(model, "TTGTTTTAAAACAGGTTCTGTACTTGATCTCTCC") #88.079746
 
 
-history = model.fit(x_train, y_train, epochs=10, batch_size =32, validation_data=(x_val, y_val))
+history = model.fit(x_train, y_train, epochs=20, batch_size =32, validation_data=(x_val, y_val))
 
 model.save("cnn_model.keras")
 
@@ -127,11 +127,10 @@ def graph_model_history(history):
     plt.plot(history.history['mae'])
     plt.plot(history.history['val_mae'])
     plt.title('model MAE')
-    plt.ylabel('mAE')
+    plt.ylabel('MAE')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'])
     plt.savefig("cnn_graphs/model_history.png")
-    plt.show()
 
 graph_model_history(history)
 
@@ -148,10 +147,10 @@ def plot_predictions(model, total_x_vals):
         pred = model.predict(temp_batch_seq, verbose=False)
         temp_pred_vals.append(pred[0][0])
     
-    plt.figure(figsize=(12, 6))
-    plt.plot(temp_x_vals, temp_y_vals, label='actual', linestyle='-', color='blue')
-    plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='--', color='red')
+    plt.figure(figsize=(14, 6))
+    plt.plot(temp_x_vals, temp_y_vals, label='actual', linestyle='--', color='blue')
+    plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='-', color='red')
     plt.ylabel('normalized indel freq')
     plt.savefig("cnn_graphs/predictions_plot.png")
 
-plot_predictions(model, 300)
+plot_predictions(model, 100)
