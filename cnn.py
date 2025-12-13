@@ -4,6 +4,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras import layers, models, regularizers
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
 import numpy as np
 
@@ -37,6 +38,7 @@ TARGET_STD = COMBINED_DF['Indel frequency'].std()
 
 COMBINED_DF['Indel frequency'] = (COMBINED_DF['Indel frequency'] - TARGET_MEAN) / TARGET_STD
 
+print(COMBINED_DF.head())
 print("total samples", len(COMBINED_DF))
 
 
@@ -62,7 +64,7 @@ print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
 model = models.Sequential([
     layers.Input(shape=(x_train.shape[1], 4)),
     layers.Conv1D(
-            filters=64, 
+            filters=128, 
             kernel_size=5, 
             activation='relu', 
             kernel_regularizer=regularizers.l2(0.0001)),
@@ -70,7 +72,7 @@ model = models.Sequential([
     layers.Dropout(0.2),
 
     layers.Conv1D(
-            filters=128,
+            filters=256,
             kernel_size=3,
             activation='relu',
             kernel_regularizer=regularizers.l2(0.0001)),
@@ -96,16 +98,60 @@ def make_prediction(model, seq):
     pred = model.predict(temp_batch_seq, verbose=False)
     print(f'\n {pred * TARGET_STD + TARGET_MEAN}')
 
-
 make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT") #14.711302
 make_prediction(model, "AAACTTTAAAAATCTTTTCTGCCAGATCTCCAGA") #0.238095
 make_prediction(model, "TTGTTTTAAAACAGGTTCTGTACTTGATCTCTCC") #88.079746
 
 
-model.fit(x_train, y_train, epochs=50, batch_size =32, validation_data=(x_val, y_val))
+history = model.fit(x_train, y_train, epochs=10, batch_size =32, validation_data=(x_val, y_val))
 
 model.save("cnn_model.keras")
 
 make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT")
 make_prediction(model, "AAACTTTAAAAATCTTTTCTGCCAGATCTCCAGA")
 make_prediction(model, "TTGTTTTAAAACAGGTTCTGTACTTGATCTCTCC")
+
+def graph_model_history(history):
+    #loss vals
+    plt.figure(figsize=(12, 4))
+    plt.subplot(1, 2, 1)
+    plt.plot(history.history['loss'])
+    plt.plot(history.history['val_loss'])
+    plt.title('model loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'])
+
+    #mae vals
+    plt.subplot(1, 2, 2)
+    plt.plot(history.history['mae'])
+    plt.plot(history.history['val_mae'])
+    plt.title('model MAE')
+    plt.ylabel('mAE')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'val'])
+    plt.savefig("cnn_graphs/model_history.png")
+    plt.show()
+
+graph_model_history(history)
+
+def plot_predictions(model, total_x_vals):
+    temp_y_vals = []
+    temp_pred_vals = []
+    temp_x_vals = []
+    for i in range(total_x_vals):
+        temp_y_vals.append(COMBINED_DF.iloc[i, 1])
+        temp_x_vals.append(i)
+        seq = COMBINED_DF.iloc[i,  0]
+        temp_batch_seq = convert_to_one_hot(seq)[np.newaxis, ...]
+
+        pred = model.predict(temp_batch_seq, verbose=False)
+        temp_pred_vals.append(pred[0][0])
+    
+    plt.figure(figsize=(12, 6))
+    plt.plot(temp_x_vals, temp_y_vals, label='actual', linestyle='-', color='blue')
+    plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='--', color='red')
+    plt.ylabel('normalized indel freq')
+    plt.savefig("cnn_graphs/predictions_plot.png")
+
+plot_predictions(model, 300)
