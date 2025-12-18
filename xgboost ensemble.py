@@ -84,6 +84,8 @@ x_val_embed = embedding_model.predict(x_val)
 
 print("embedding shape", x_train_embed.shape)
 
+tnse_embedding_visualization(x_train_embed, y_train)
+
 
 
 xgb_model = xgb.XGBRegressor(
@@ -95,6 +97,7 @@ xgb_model = xgb.XGBRegressor(
     colsample_bytree=0.8,
     reg_lambda=1.0
     )
+
 
 xgb_model.fit(x_train_embed, y_train,
               eval_set=[(x_val_embed, y_val)],

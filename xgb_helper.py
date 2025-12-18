@@ -6,6 +6,8 @@ import pandas as pd
 from cnn_helper import *
 import xgboost as xgb
 
+from sklearn.manifold import TSNE
+
 def predict_sequence_xg_boost(one_hot, embedding_model, xgb_model):
     xgb.set_config(verbosity=0)
     embed = embedding_model.predict(one_hot)
@@ -46,3 +48,29 @@ def graph_xgb_model_history(history, path):
     plt.legend(['val'])
 
     plt.savefig(path)
+
+
+def tnse_embedding_visualization(x_train_embed, y_train):
+    tsne = TSNE(
+    n_components=2,
+    learning_rate='auto',
+    init='random',
+    perplexity=30
+    )
+
+
+    x_train_tsne = tsne.fit_transform(x_train_embed)
+
+
+    plt.figure(figsize=(8, 6))
+    scatter = plt.scatter(
+        x_train_tsne[:, 0], x_train_tsne[:, 1],
+        c=y_train, cmap='viridis', s=12, alpha=0.8
+    )
+
+    plt.colorbar(scatter, label="Normalized Indel Frequency")
+    plt.title("t-SNE of CNN Embeddings (GlobalMaxPool Layer)")
+    plt.xlabel("t-SNE Dimension 1")
+    plt.ylabel("t-SNE Dimension 2")
+    plt.tight_layout()
+    plt.savefig("cnn_xgb_graphs/tsne_embedding_visualization.png")
