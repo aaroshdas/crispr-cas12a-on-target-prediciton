@@ -81,7 +81,7 @@ model = models.Sequential([
     layers.Dense(1, activation='linear')
 ])
 
-model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+model.compile(optimizer='adam', loss='mean_squared_error', metrics=['root_mean_squared_error','mae'])
 model.summary()
 
 
@@ -97,7 +97,9 @@ model.save("cnn_model.keras")
 
 
 
-graph_model_history(history, "cnn_graphs/model_history.png")
+graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
+
+graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
 
 
 plot_predictions(model, 100, COMBINED_DF, "cnn_graphs/predictions_plot.png")

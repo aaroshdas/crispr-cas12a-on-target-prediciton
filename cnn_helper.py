@@ -13,7 +13,7 @@ def convert_to_one_hot(seq):
     return np.array(one_hot_temp_list)
 
 
-def graph_model_history(history, path):
+def graph_model_history(history, path, metric):
     #loss vals
     plt.figure(figsize=(12, 4))
     plt.subplot(1, 2, 1)
@@ -26,10 +26,10 @@ def graph_model_history(history, path):
 
     #mae vals
     plt.subplot(1, 2, 2)
-    plt.plot(history.history['mae'])
-    plt.plot(history.history['val_mae'])
-    plt.title('model MAE')
-    plt.ylabel('MAE')
+    plt.plot(history.history[metric])
+    plt.plot(history.history[f'val_{metric}'])
+    plt.title(f'model {metric}')
+    plt.ylabel(f'{metric}')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'])
     plt.savefig(path)
