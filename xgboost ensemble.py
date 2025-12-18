@@ -71,16 +71,16 @@ model = models.Sequential([
 model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 model.summary()
 
-history = model.fit(x_train, y_train, epochs=15, batch_size=32, validation_data=(x_val, y_val))
+history = model.fit(x_train, y_train, epochs=25, batch_size=32, validation_data=(x_val, y_val))
 
 graph_model_history(history, "cnn_xgb_graphs/cnn_feature_extractor_history.png", "mae")
 
 model.build(input_shape=(None, x_train.shape[1], 4))
 
-embedding_model = models.Model(inputs=model.inputs, outputs=model.layers[5].output)
+embedding_model = models.Model(inputs=model.inputs, outputs=model.layers[4].output)
 
-x_train_embed = embedding_model.predict(x_train)
-x_val_embed = embedding_model.predict(x_val)
+x_train_embed = embedding_model(x_train, training=False).numpy()
+x_val_embed = embedding_model(x_val, training=False).numpy()
 
 print("embedding shape", x_train_embed.shape)
 
@@ -89,9 +89,9 @@ tnse_embedding_visualization(x_train_embed, y_train)
 
 
 xgb_model = xgb.XGBRegressor(
-    n_estimators=500,
+    n_estimators=400,
     learning_rate=0.03,
-    max_depth=6,
+    max_depth=5,
 
     subsample=0.8,
     colsample_bytree=0.8,
