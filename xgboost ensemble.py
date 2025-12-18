@@ -1,15 +1,13 @@
-#cnn 
-#conda activate cc12on
+#xg boost
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers
+from tensorflow.keras import layers, models, regularizers, Model
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from cnn_helper import *
-
 import numpy as np
-
-
+import xgboost as xgb  
+from xgb_helper import *
 
 dataset_path = "./datasets/"
 train_path = "Kim_2018_Train.csv"
@@ -21,10 +19,6 @@ def filter_df(df):
     df.rename(columns={"Context Sequence": "Input seq"}, inplace=True)
     df = df[df['Indel frequency'] >= -1]
     df['Indel frequency'] = df['Indel frequency'].clip(lower=0)
-    
-    #old normalization, diff one used
-    #df['Indel frequency_norm'] = df['Indel frequency'] / 100.0
-
     return df
 
 temp_train_df= filter_df(pd.read_csv(dataset_path + train_path))
@@ -38,22 +32,18 @@ print(COMBINED_DF.head())
 TARGET_MEAN = COMBINED_DF['Indel frequency'] .mean()
 TARGET_STD = COMBINED_DF['Indel frequency'].std()
 
-#normalize indel frequnecy
 COMBINED_DF['Indel frequency'] = (COMBINED_DF['Indel frequency'] - TARGET_MEAN) / TARGET_STD
 
-print(COMBINED_DF.head())
-print("total samples", len(COMBINED_DF))
-
-# print(convert_to_one_hot(test_df.loc[0, "Input seq"]))
 
 train_sequences = COMBINED_DF["Input seq"].values
-raw_x_vals = np.array([convert_to_one_hot(seq, ) for seq in train_sequences])
 
+raw_x_vals = np.array([convert_to_one_hot(seq, ) for seq in train_sequences])
 raw_y_vals = COMBINED_DF["Indel frequency"].values.astype(float)
 
 
 x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_size=0.15)
 print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
+
 
 
 model = models.Sequential([
@@ -63,7 +53,6 @@ model = models.Sequential([
             kernel_size=5, 
             activation='relu', 
             kernel_regularizer=regularizers.l2(0.0001)),
-    # layers.BatchNormalization()
     layers.Dropout(0.2),
 
     layers.Conv1D(
@@ -71,33 +60,48 @@ model = models.Sequential([
             kernel_size=3,
             activation='relu',
             kernel_regularizer=regularizers.l2(0.0001)),
-    
-    # layers.BatchNormalization(),
     layers.GlobalMaxPooling1D(),
 
     layers.Dense(64, activation='relu'),
     layers.Dropout(0.3),
-    
+
     layers.Dense(1, activation='linear')
 ])
 
 model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 model.summary()
 
+history = model.fit(x_train, y_train, epochs=7, batch_size=32, validation_data=(x_val, y_val))
 
-#make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT", TARGET_STD, TARGET_MEAN) #14.711302
+graph_model_history(history, "cnn_graphs/cnn_feature_extractor_history.png")
 
+model.build(input_shape=(None, x_train.shape[1], 4))
 
-history = model.fit(x_train, y_train, epochs=20, batch_size =32, validation_data=(x_val, y_val))
+embedding_model = models.Model(inputs=model.inputs, outputs=model.layers[5].output)
 
-model.save("cnn_model.keras")
+x_train_embed = embedding_model.predict(x_train)
+x_val_embed = embedding_model.predict(x_val)
 
-#make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT",TARGET_STD, TARGET_MEAN)
-
-
-
-
-graph_model_history(history, "cnn_graphs/model_history.png")
+print("embedding shape", x_train_embed.shape)
 
 
-plot_predictions(model, 200, COMBINED_DF, "cnn_graphs/predictions_plot.png")
+
+xgb_model = xgb.XGBRegressor(
+    n_estimators=100,
+    learning_rate=0.03,
+    max_depth=6,
+
+    subsample=0.8,
+    colsample_bytree=0.8,
+    reg_lambda=1.0
+    )
+
+xgb_model.fit(x_train_embed, y_train,
+              eval_set=[(x_val_embed, y_val)],
+              verbose=True)
+
+xgb_model.save_model("cnn_xgb_model.json")
+
+
+plot_predictions_xg_boost(200, COMBINED_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
+

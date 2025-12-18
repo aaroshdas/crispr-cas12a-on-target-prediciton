@@ -13,7 +13,7 @@ def convert_to_one_hot(seq):
     return np.array(one_hot_temp_list)
 
 
-def graph_model_history(history):
+def graph_model_history(history, path):
     #loss vals
     plt.figure(figsize=(12, 4))
     plt.subplot(1, 2, 1)
@@ -32,9 +32,9 @@ def graph_model_history(history):
     plt.ylabel('MAE')
     plt.xlabel('epoch')
     plt.legend(['train', 'val'])
-    plt.savefig("cnn_graphs/model_history.png")
+    plt.savefig(path)
 
-def plot_predictions(model, total_x_vals, COMBINED_DF):
+def plot_predictions(model, total_x_vals, COMBINED_DF, path):
     temp_y_vals = []
     temp_pred_vals = []
     temp_x_vals = []
@@ -43,7 +43,7 @@ def plot_predictions(model, total_x_vals, COMBINED_DF):
         temp_x_vals.append(i)
         seq = COMBINED_DF.iloc[i,  0]
         temp_batch_seq = convert_to_one_hot(seq)[np.newaxis, ...]
-
+    
         pred = model.predict(temp_batch_seq, verbose=False)
         temp_pred_vals.append(pred[0][0])
     
@@ -51,8 +51,7 @@ def plot_predictions(model, total_x_vals, COMBINED_DF):
     plt.plot(temp_x_vals, temp_y_vals, label='actual', linestyle='--', color='blue')
     plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='-', color='red')
     plt.ylabel('normalized indel freq')
-    plt.savefig("cnn_graphs/predictions_plot.png")
-
+    plt.savefig(path)
 
 def make_prediction(model, seq, TARGET_STD, TARGET_MEAN):
     temp_batch_seq = convert_to_one_hot(seq)[np.newaxis, ...]
