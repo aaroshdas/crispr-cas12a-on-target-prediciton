@@ -100,4 +100,4 @@ model.save("cnn_model.keras")
 graph_model_history(history, "cnn_graphs/model_history.png")
 
 
-plot_predictions(model, 200, COMBINED_DF, "cnn_graphs/predictions_plot.png")
+plot_predictions(model, 100, COMBINED_DF, "cnn_graphs/predictions_plot.png")

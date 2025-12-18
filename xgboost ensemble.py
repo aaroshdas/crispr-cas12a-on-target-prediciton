@@ -73,7 +73,7 @@ model.summary()
 
 history = model.fit(x_train, y_train, epochs=7, batch_size=32, validation_data=(x_val, y_val))
 
-graph_model_history(history, "cnn_graphs/cnn_feature_extractor_history.png")
+graph_model_history(history, "cnn_xgb_graphs/cnn_feature_extractor_history.png")
 
 model.build(input_shape=(None, x_train.shape[1], 4))
 
@@ -103,5 +103,5 @@ xgb_model.fit(x_train_embed, y_train,
 xgb_model.save_model("cnn_xgb_model.json")
 
 
-plot_predictions_xg_boost(200, COMBINED_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
+plot_predictions_xg_boost(100, COMBINED_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
 
