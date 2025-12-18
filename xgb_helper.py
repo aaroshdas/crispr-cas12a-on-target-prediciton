@@ -32,3 +32,17 @@ def plot_predictions_xg_boost(total_x_vals, COMBINED_DF, path, embedding_model, 
     plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='-', color='red')
     plt.ylabel('normalized indel freq')
     plt.savefig(path)
+
+
+def graph_xgb_model_history(history, path):
+    #loss vals
+    val = history['validation_0']['rmse']
+
+    plt.figure(figsize=(12, 4))
+    plt.plot(val)
+    plt.title('model rmse')
+    plt.ylabel('rmse')
+    plt.xlabel('estimators')
+    plt.legend(['val'])
+
+    plt.savefig(path)

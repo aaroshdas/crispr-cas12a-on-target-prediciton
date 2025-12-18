@@ -104,4 +104,5 @@ xgb_model.save_model("cnn_xgb_model.json")
 
 
 plot_predictions_xg_boost(100, COMBINED_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
-
+history = xgb_model.evals_result()
+graph_xgb_model_history(history, "cnn_xgb_graphs/xgb_model_history.png")
