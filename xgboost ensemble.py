@@ -8,6 +8,8 @@ from cnn_helper import *
 import numpy as np
 import xgboost as xgb  
 from xgb_helper import *
+import xgboost_ensable_residual_cnn 
+import xgboost_enseble_standard_cnn
 
 dataset_path = "./datasets/"
 train_path = "Kim_2018_Train.csv"
@@ -46,42 +48,23 @@ print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
 
 
 
-model = models.Sequential([
-    layers.Input(shape=(x_train.shape[1], 4)),
-    layers.Conv1D(
-            filters=128, 
-            kernel_size=5, 
-            activation='relu', 
-            kernel_regularizer=regularizers.l2(0.0001)),
-    layers.Dropout(0.2),
-
-    layers.Conv1D(
-            filters=256,
-            kernel_size=3,
-            activation='relu',
-            kernel_regularizer=regularizers.l2(0.0001)),
-    
-    # layers.Dropout(0.2),
-    # layers.Conv1D(
-    #     filters=256,
-    #     kernel_size=2,
-    #     activation='relu',
-    #     kernel_regularizer=regularizers.l2(0.0001)),
-
-    layers.GlobalMaxPooling1D(),
-
-    layers.Dense(64, activation='relu'),
-    layers.Dropout(0.3),
-
-    layers.Dense(1, activation='linear')
-])
-
-#original 4
+#original 4#
 MAX_POOLING_LAYER_INDEX = 4
+
+
+
+
+#RESIDUAL CNN OVERWRITE
+#layer = 12 if using residual cnn
+# model,MAX_POOLING_LAYER_INDEX = xgboost_ensable_residual_cnn.build_residual_cnn(x_train)
+
+model,MAX_POOLING_LAYER_INDEX= xgboost_enseble_standard_cnn.build_standard_cnn(x_train)
+
 
 
 model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 model.summary()
+
 
 history = model.fit(x_train, y_train, epochs=25, batch_size=32, validation_data=(x_val, y_val))
 
