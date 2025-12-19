@@ -60,6 +60,14 @@ model = models.Sequential([
             kernel_size=3,
             activation='relu',
             kernel_regularizer=regularizers.l2(0.0001)),
+    
+    # layers.Dropout(0.2),
+    # layers.Conv1D(
+    #     filters=256,
+    #     kernel_size=2,
+    #     activation='relu',
+    #     kernel_regularizer=regularizers.l2(0.0001)),
+
     layers.GlobalMaxPooling1D(),
 
     layers.Dense(64, activation='relu'),
@@ -68,6 +76,10 @@ model = models.Sequential([
     layers.Dense(1, activation='linear')
 ])
 
+#original 4
+MAX_POOLING_LAYER_INDEX = 4
+
+
 model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 model.summary()
 
@@ -75,9 +87,11 @@ history = model.fit(x_train, y_train, epochs=25, batch_size=32, validation_data=
 
 graph_model_history(history, "cnn_xgb_graphs/cnn_feature_extractor_history.png", "mae")
 
+
+
 model.build(input_shape=(None, x_train.shape[1], 4))
 
-embedding_model = models.Model(inputs=model.inputs, outputs=model.layers[4].output)
+embedding_model = models.Model(inputs=model.inputs, outputs=model.layers[MAX_POOLING_LAYER_INDEX].output)
 
 x_train_embed = embedding_model(x_train, training=False).numpy()
 x_val_embed = embedding_model(x_val, training=False).numpy()
@@ -85,6 +99,8 @@ x_val_embed = embedding_model(x_val, training=False).numpy()
 print("embedding shape", x_train_embed.shape)
 
 tnse_embedding_visualization(x_train_embed, y_train)
+
+umap_embedding_visualization(x_train_embed, y_train)
 
 
 
@@ -108,4 +124,5 @@ xgb_model.save_model("cnn_xgb_model.json")
 
 plot_predictions_xg_boost(100, COMBINED_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
 history = xgb_model.evals_result()
+
 graph_xgb_model_history(history, "cnn_xgb_graphs/xgb_model_history.png")

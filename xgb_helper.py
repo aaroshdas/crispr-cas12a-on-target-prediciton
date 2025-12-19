@@ -6,6 +6,7 @@ import pandas as pd
 from cnn_helper import *
 import xgboost as xgb
 
+import umap
 from sklearn.manifold import TSNE
 
 def predict_sequence_xg_boost(one_hot, embedding_model, xgb_model):
@@ -57,8 +58,6 @@ def tnse_embedding_visualization(x_train_embed, y_train):
     init='random',
     perplexity=30
     )
-
-
     x_train_tsne = tsne.fit_transform(x_train_embed)
 
 
@@ -74,3 +73,27 @@ def tnse_embedding_visualization(x_train_embed, y_train):
     plt.ylabel("t-SNE Dimension 2")
     plt.tight_layout()
     plt.savefig("cnn_xgb_graphs/tsne_embedding_visualization.png")
+
+
+def umap_embedding_visualization(embeddings, y):
+    reducer = umap.UMAP(
+        n_neighbors=15,
+        min_dist=0.1,
+        metric='euclidean',
+        random_state=42
+    )
+
+    embedding_2d = reducer.fit_transform(embeddings)
+    plt.figure(figsize=(10, 8))
+    plt.scatter(
+        embedding_2d[:, 0],
+        embedding_2d[:, 1],
+        c=y,
+        cmap='viridis',
+        s=5
+    )
+    plt.colorbar(label='Normalized Indel Frequency')
+    plt.title("UMAP of CNN Embeddings")
+    plt.xlabel("UMAP 1")
+    plt.ylabel("UMAP 2")
+    plt.savefig("cnn_xgb_graphs/umap_embedding_visualization.png")
