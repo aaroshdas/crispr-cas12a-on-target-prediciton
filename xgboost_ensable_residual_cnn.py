@@ -42,14 +42,12 @@ def build_residual_dilated_cnn(seq_len=34):
         kernel_regularizer=regularizers.l2(1e-4)
     )(inp)
     x = layers.BatchNormalization()(x)
-
     x = residual_block(128, kernel_size=3, dilation_rate=1)(x)
     x = residual_block(128, kernel_size=3, dilation_rate=2)(x)
     x = residual_block(128, kernel_size=3, dilation_rate=4)(x)
-
     x = layers.Dropout(0.3)(x)
-    x = layers.GlobalMaxPooling1D()(x)
 
+    x = layers.GlobalMaxPooling1D()(x)
     x = layers.Dense(128, activation='relu')(x)
     x = layers.Dropout(0.3)(x)
 
@@ -71,4 +69,4 @@ def build_residual_cnn(x_train):
     model = build_residual_dilated_cnn(seq_len)
     model.summary()
     #model, pooling layer index
-    return model, 12
+    return model, 25

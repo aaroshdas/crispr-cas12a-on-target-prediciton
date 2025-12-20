@@ -56,9 +56,9 @@ MAX_POOLING_LAYER_INDEX = 4
 
 #RESIDUAL CNN OVERWRITE
 #layer = 12 if using residual cnn
-# model,MAX_POOLING_LAYER_INDEX = xgboost_ensable_residual_cnn.build_residual_cnn(x_train)
+model,MAX_POOLING_LAYER_INDEX = xgboost_ensable_residual_cnn.build_residual_cnn(x_train)
 
-model,MAX_POOLING_LAYER_INDEX= xgboost_enseble_standard_cnn.build_standard_cnn(x_train)
+#model,MAX_POOLING_LAYER_INDEX= xgboost_enseble_standard_cnn.build_standard_cnn(x_train)
 
 
 
@@ -66,7 +66,7 @@ model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 model.summary()
 
 
-history = model.fit(x_train, y_train, epochs=25, batch_size=32, validation_data=(x_val, y_val))
+history = model.fit(x_train, y_train, epochs=15, batch_size=32, validation_data=(x_val, y_val))
 
 graph_model_history(history, "cnn_xgb_graphs/cnn_feature_extractor_history.png", "mae")
 
