@@ -31,7 +31,11 @@ def filter_df(df):
 
 temp_train_df= filter_df(pd.read_csv(dataset_path + train_path))
 
+
 temp_test_df= filter_df(pd.read_csv(dataset_path + test_path))
+
+TEST_DF = temp_test_df.iloc[-100:]
+temp_test_df = temp_test_df.iloc[:-100]
 
 COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
 
@@ -82,4 +86,4 @@ graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
 graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
 
 
-plot_predictions(model, 100, COMBINED_DF, "cnn_graphs/predictions_plot.png")
+plot_predictions(model, len(TEST_DF), TEST_DF, "cnn_graphs/predictions_plot.png")

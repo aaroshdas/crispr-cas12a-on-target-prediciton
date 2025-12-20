@@ -45,11 +45,17 @@ def plot_predictions(model, total_x_vals, COMBINED_DF, path):
     
         pred = model.predict(temp_batch_seq, verbose=False)
         temp_pred_vals.append(pred[0][0])
+
+    rmse = np.sqrt(np.mean((np.array(temp_y_vals) - np.array(temp_pred_vals))**2))
+    mae = np.mean(np.abs(np.array(temp_y_vals) - np.array(temp_pred_vals)))
+
+    
     
     plt.figure(figsize=(15, 5))
     plt.plot(temp_x_vals, temp_y_vals, label='actual', linestyle='--', color='blue')
     plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='-', color='red')
-    plt.ylabel('normalized indel freq')
+    plt.ylabel(f'normalized indel freq')
+    plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f}')
     plt.savefig(path)
 
 def make_prediction(model, seq, TARGET_STD, TARGET_MEAN):

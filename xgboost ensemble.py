@@ -27,6 +27,11 @@ temp_train_df= filter_df(pd.read_csv(dataset_path + train_path))
 
 temp_test_df= filter_df(pd.read_csv(dataset_path + test_path))
 
+TEST_DF = temp_test_df.iloc[-100:]
+temp_test_df = temp_test_df.iloc[:-100]
+
+
+
 COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
 
 print(COMBINED_DF.head())
@@ -50,9 +55,6 @@ print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
 
 #original 4#
 MAX_POOLING_LAYER_INDEX = 4
-
-
-
 
 #RESIDUAL CNN OVERWRITE
 #layer = 12 if using residual cnn
@@ -105,7 +107,7 @@ xgb_model.fit(x_train_embed, y_train,
 xgb_model.save_model("cnn_xgb_model.json")
 
 
-plot_predictions_xg_boost(100, COMBINED_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
+plot_predictions_xg_boost(len(TEST_DF), TEST_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
 history = xgb_model.evals_result()
 
 graph_xgb_model_history(history, "cnn_xgb_graphs/xgb_model_history.png")

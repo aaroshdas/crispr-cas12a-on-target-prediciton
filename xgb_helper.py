@@ -20,6 +20,7 @@ def predict_sequence_xg_boost(one_hot, embedding_model, xgb_model):
 def plot_predictions_xg_boost(total_x_vals, COMBINED_DF, path, embedding_model, xgb_model):
     temp_y_vals = []
     temp_pred_vals = []
+
     temp_x_vals = []
     for i in range(total_x_vals):
         temp_y_vals.append(COMBINED_DF.iloc[i, 1])
@@ -30,10 +31,15 @@ def plot_predictions_xg_boost(total_x_vals, COMBINED_DF, path, embedding_model, 
         pred = predict_sequence_xg_boost(temp_batch_seq, embedding_model, xgb_model)
         temp_pred_vals.append(pred)
     
+    rmse = np.sqrt(np.mean((np.array(temp_y_vals) - np.array(temp_pred_vals))**2))
+    mae = np.mean(np.abs(np.array(temp_y_vals) - np.array(temp_pred_vals)))
+
+
     plt.figure(figsize=(15, 5))
     plt.plot(temp_x_vals, temp_y_vals, label='actual', linestyle='--', color='blue')
     plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='-', color='red')
-    plt.ylabel('normalized indel freq')
+    plt.ylabel(f'normalized indel freq')
+    plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f}')
     plt.savefig(path)
 
 
