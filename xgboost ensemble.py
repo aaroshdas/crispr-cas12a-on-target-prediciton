@@ -72,7 +72,7 @@ model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 model.summary()
 
 
-history = model.fit(x_train, y_train, epochs=20, batch_size=32, validation_data=(x_val, y_val))
+history = model.fit(x_train, y_train, epochs=16, batch_size=32, validation_data=(x_val, y_val))
 
 graph_model_history(history, "cnn_xgb_graphs/cnn_feature_extractor_history.png", "mae")
 
