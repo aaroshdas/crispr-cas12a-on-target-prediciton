@@ -9,6 +9,8 @@ from cnn_helper import *
 
 import numpy as np
 
+import cnn_models
+
 
 
 dataset_path = "./datasets/"
@@ -56,30 +58,8 @@ x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_s
 print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
 
 
-model = models.Sequential([
-    layers.Input(shape=(x_train.shape[1], 4)),
-    layers.Conv1D(
-            filters=128, 
-            kernel_size=5, 
-            activation='relu', 
-            kernel_regularizer=regularizers.l2(0.0001)),
-    # layers.BatchNormalization()
-    layers.Dropout(0.2),
-
-    layers.Conv1D(
-            filters=256,
-            kernel_size=3,
-            activation='relu',
-            kernel_regularizer=regularizers.l2(0.0001)),
-    
-    # layers.BatchNormalization(),
-    layers.GlobalMaxPooling1D(),
-
-    layers.Dense(64, activation='relu'),
-    layers.Dropout(0.3),
-    
-    layers.Dense(1, activation='linear')
-])
+#model = cnn_models.load_standard_model(x_train)
+model = cnn_models.load_residual_model(x_train)
 
 model.compile(optimizer='adam', loss='mean_squared_error', metrics=['root_mean_squared_error','mae'])
 model.summary()
