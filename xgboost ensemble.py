@@ -34,12 +34,16 @@ temp_test_df = temp_test_df.iloc[:-100]
 
 COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
 
+
 print(COMBINED_DF.head())
 
 TARGET_MEAN = COMBINED_DF['Indel frequency'] .mean()
 TARGET_STD = COMBINED_DF['Indel frequency'].std()
 
 COMBINED_DF['Indel frequency'] = (COMBINED_DF['Indel frequency'] - TARGET_MEAN) / TARGET_STD
+
+TEST_DF = COMBINED_DF.iloc[-100:]
+COMBINED_DF = COMBINED_DF.iloc[:-100]
 
 
 train_sequences = COMBINED_DF["Input seq"].values
@@ -68,7 +72,7 @@ model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
 model.summary()
 
 
-history = model.fit(x_train, y_train, epochs=15, batch_size=32, validation_data=(x_val, y_val))
+history = model.fit(x_train, y_train, epochs=20, batch_size=32, validation_data=(x_val, y_val))
 
 graph_model_history(history, "cnn_xgb_graphs/cnn_feature_extractor_history.png", "mae")
 
@@ -77,6 +81,9 @@ graph_model_history(history, "cnn_xgb_graphs/cnn_feature_extractor_history.png",
 model.build(input_shape=(None, x_train.shape[1], 4))
 
 embedding_model = models.Model(inputs=model.inputs, outputs=model.layers[MAX_POOLING_LAYER_INDEX].output)
+
+model.save("./weights/cnn_embeddings_model.keras")
+
 
 x_train_embed = embedding_model(x_train, training=False).numpy()
 x_val_embed = embedding_model(x_val, training=False).numpy()
@@ -90,7 +97,7 @@ umap_embedding_visualization(x_train_embed, y_train)
 
 
 xgb_model = xgb.XGBRegressor(
-    n_estimators=600,
+    n_estimators=250,
     learning_rate=0.03,
     max_depth=5,
 
@@ -104,10 +111,13 @@ xgb_model.fit(x_train_embed, y_train,
               eval_set=[(x_val_embed, y_val)],
               verbose=True)
 
-xgb_model.save_model("cnn_xgb_model.json")
+xgb_model.save_model("./weights/cnn_xgb_model.json")
+
 
 
 plot_predictions_xg_boost(len(TEST_DF), TEST_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
+#plot_predictions_xg_boost(100, COMBINED_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
+
 history = xgb_model.evals_result()
 
 graph_xgb_model_history(history, "cnn_xgb_graphs/xgb_model_history.png")
