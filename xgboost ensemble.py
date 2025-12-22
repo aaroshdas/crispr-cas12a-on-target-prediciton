@@ -8,8 +8,7 @@ from cnn_helper import *
 import numpy as np
 import xgboost as xgb  
 from xgb_helper import *
-import xgboost_ensable_residual_cnn 
-import xgboost_enseble_standard_cnn
+import xgboost_ensemble_cnn_models 
 
 dataset_path = "./datasets/"
 train_path = "Kim_2018_Train.csv"
@@ -60,11 +59,10 @@ print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
 #original 4#
 MAX_POOLING_LAYER_INDEX = 4
 
-#RESIDUAL CNN OVERWRITE
-#layer = 12 if using residual cnn
-model,MAX_POOLING_LAYER_INDEX = xgboost_ensable_residual_cnn.build_residual_cnn(x_train)
+#RESIDUAL CNN 
+model,MAX_POOLING_LAYER_INDEX = xgboost_ensemble_cnn_models.build_residual_cnn(x_train)
 
-#model,MAX_POOLING_LAYER_INDEX= xgboost_enseble_standard_cnn.build_standard_cnn(x_train)
+#model,MAX_POOLING_LAYER_INDEX= xgboost_ensemble_cnn_models.build_standard_cnn(x_train)
 
 
 

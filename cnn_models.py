@@ -1,5 +1,5 @@
 from tensorflow.keras import layers, models, regularizers
-import xgboost_ensable_residual_cnn
+import xgboost_ensemble_cnn_models
 def load_standard_model(x_train):
     model = models.Sequential([
         layers.Input(shape=(x_train.shape[1], 4)),
@@ -29,5 +29,5 @@ def load_standard_model(x_train):
 
 
 def load_residual_model(x_train):
-        model, _ = xgboost_ensable_residual_cnn.build_residual_cnn(x_train)
+        model, _ = xgboost_ensemble_cnn_models.build_residual_cnn(x_train)
         return model
