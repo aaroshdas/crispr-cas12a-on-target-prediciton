@@ -1,7 +1,7 @@
 #xg boost
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers, Model
+from tensorflow.keras import layers, models, regularizers, Model # type: ignore
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from cnn_helper import *

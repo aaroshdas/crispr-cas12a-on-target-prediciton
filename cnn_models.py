@@ -1,4 +1,4 @@
-from tensorflow.keras import layers, models, regularizers
+from tensorflow.keras import layers, models, regularizers # type: ignore
 import xgboost_ensemble_cnn_models
 def load_standard_model(x_train):
     model = models.Sequential([

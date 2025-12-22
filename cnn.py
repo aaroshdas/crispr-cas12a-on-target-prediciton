@@ -2,7 +2,7 @@
 #conda activate cc12on
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers
+from tensorflow.keras import layers, models, regularizers # type: ignore
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from cnn_helper import *
