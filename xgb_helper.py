@@ -74,9 +74,7 @@ def tnse_embedding_visualization(x_train_embed, y_train):
     )
 
     plt.colorbar(scatter, label="Normalized Indel Frequency")
-    plt.title("t-SNE of CNN Embeddings (GlobalMaxPool Layer)")
-    plt.xlabel("t-SNE Dimension 1")
-    plt.ylabel("t-SNE Dimension 2")
+    plt.title("t-SNE of CNN Embeddings")
     plt.tight_layout()
     plt.savefig("cnn_xgb_graphs/tsne_embedding_visualization.png")
 
@@ -100,6 +98,4 @@ def umap_embedding_visualization(embeddings, y):
     )
     plt.colorbar(label='Normalized Indel Frequency')
     plt.title("UMAP of CNN Embeddings")
-    plt.xlabel("UMAP 1")
-    plt.ylabel("UMAP 2")
     plt.savefig("cnn_xgb_graphs/umap_embedding_visualization.png")
