@@ -6,6 +6,7 @@ import xgboost as xgb
 from cnn_helper import convert_to_one_hot
 from xgb_helper import plot_predictions_xg_boost
 from xgboost_ensemble_cnn_models import get_residual_cnn_pooling_index
+from data_loader import filter_df
 
 dataset_path = "./datasets/"
 test_path = "Kim_2018_Test.csv"
@@ -17,13 +18,6 @@ xgb_model_path= weights_path+ "xgb_01.json"
 
 MAX_POOLING_LAYER_INDEX = get_residual_cnn_pooling_index()
 
-
-def filter_df(df):
-    df = df.drop(columns=["50 bp synthetic target and target context sequence","20 bp guide sequence (5' to 3')","Indel frequency (% Background)","Indel read count (Background)","Total read count (Background)","Indel freqeuncy (Cpf1 delivered %)", "Indel read count (Cpf1 delivered)","Total read count (Cpf1 delivered)"], axis=1)
-    df.rename(columns={"Context Sequence": "Input seq"}, inplace=True)
-    df = df[df['Indel frequency'] >= -1]
-    df['Indel frequency'] = df['Indel frequency'].clip(lower=0)
-    return df
 
 
 test_df = filter_df(pd.read_csv(dataset_path + test_path))[:200]
@@ -63,7 +57,8 @@ def compare_pred(test_df):
     
     test_df["Indel frequency"] = (test_df["Indel frequency"]* TARGET_STD) + TARGET_MEAN
     
-    print(test_df[["Indel frequency", "Pred"]].head())
+    # print(test_df[["Indel frequency", "Pred"]].head())
+    print(test_df.head())
 
 compare_pred(test_df)
 

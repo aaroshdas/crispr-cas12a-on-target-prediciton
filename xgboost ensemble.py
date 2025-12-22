@@ -9,18 +9,15 @@ import numpy as np
 import xgboost as xgb  
 from xgb_helper import *
 import xgboost_ensemble_cnn_models 
+from data_loader import filter_df
+
 
 dataset_path = "./datasets/"
 train_path = "Kim_2018_Train.csv"
 test_path = "Kim_2018_Test.csv"
 
+#csv needs to be formated: Context Sequence, Indel frequency
 
-def filter_df(df):
-    df = df.drop(columns=["50 bp synthetic target and target context sequence","20 bp guide sequence (5' to 3')","Indel frequency (% Background)","Indel read count (Background)","Total read count (Background)","Indel freqeuncy (Cpf1 delivered %)", "Indel read count (Cpf1 delivered)","Total read count (Cpf1 delivered)"], axis=1)
-    df.rename(columns={"Context Sequence": "Input seq"}, inplace=True)
-    df = df[df['Indel frequency'] >= -1]
-    df['Indel frequency'] = df['Indel frequency'].clip(lower=0)
-    return df
 
 temp_train_df= filter_df(pd.read_csv(dataset_path + train_path))
 
