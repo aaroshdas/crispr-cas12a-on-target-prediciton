@@ -36,8 +36,11 @@ COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
 
 print(COMBINED_DF.head())
 
-TARGET_MEAN = COMBINED_DF['Indel frequency'] .mean()
-TARGET_STD = COMBINED_DF['Indel frequency'].std()
+# TARGET_MEAN = COMBINED_DF['Indel frequency'] .mean()
+# TARGET_STD = COMBINED_DF['Indel frequency'].std()
+
+TARGET_MEAN = np.load("./weights/target_mean.npy")
+TARGET_STD  = np.load("./weights/target_std.npy")
 
 COMBINED_DF['Indel frequency'] = (COMBINED_DF['Indel frequency'] - TARGET_MEAN) / TARGET_STD
 

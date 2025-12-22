@@ -9,6 +9,8 @@ import xgboost as xgb
 import umap
 from sklearn.manifold import TSNE
 
+from scipy.stats import spearmanr
+
 def predict_sequence_xg_boost(one_hot, embedding_model, xgb_model):
     xgb.set_config(verbosity=0)
     embed = embedding_model.predict(one_hot)
@@ -31,15 +33,22 @@ def plot_predictions_xg_boost(total_x_vals, COMBINED_DF, path, embedding_model, 
         pred = predict_sequence_xg_boost(temp_batch_seq, embedding_model, xgb_model)
         temp_pred_vals.append(pred)
     
-    rmse = np.sqrt(np.mean((np.array(temp_y_vals) - np.array(temp_pred_vals))**2))
-    mae = np.mean(np.abs(np.array(temp_y_vals) - np.array(temp_pred_vals)))
+    np_y_vals = np.array(temp_y_vals)
+    np_pred_vals = np.array(temp_pred_vals)
+
+    rmse = np.sqrt(np.mean((np_y_vals -np_pred_vals)**2))
+    mae = np.mean(np.abs(np_y_vals - np_pred_vals))
+    
+    rho, p_value = spearmanr(np_y_vals, np_pred_vals)
+
+    
 
 
     plt.figure(figsize=(15, 5))
     plt.plot(temp_x_vals, temp_y_vals, label='actual', linestyle='--', color='blue')
     plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='-', color='red')
     plt.ylabel(f'normalized indel freq')
-    plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f}')
+    plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
     plt.savefig(path)
 
 

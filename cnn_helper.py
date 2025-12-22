@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+from scipy.stats import spearmanr
+ 
 
 def convert_to_one_hot(seq):
     mapping = {'A': [1, 0, 0, 0], 'C': [0, 1, 0, 0], 'G': [0, 0, 1, 0], 'T': [0, 0, 0, 1]}
@@ -46,14 +48,20 @@ def plot_predictions(model, total_x_vals, COMBINED_DF, path):
         pred = model.predict(temp_batch_seq, verbose=False)
         temp_pred_vals.append(pred[0][0])
 
-    rmse = np.sqrt(np.mean((np.array(temp_y_vals) - np.array(temp_pred_vals))**2))
-    mae = np.mean(np.abs(np.array(temp_y_vals) - np.array(temp_pred_vals)))    
+    np_y_vals = np.array(temp_y_vals)
+    np_pred_vals = np.array(temp_pred_vals)
+
+    rmse = np.sqrt(np.mean((np_y_vals -np_pred_vals)**2))
+    mae = np.mean(np.abs(np_y_vals - np_pred_vals))
+    rho, p_value = spearmanr(np_y_vals, np_pred_vals)
+
+    
     
     plt.figure(figsize=(15, 5))
     plt.plot(temp_x_vals, temp_y_vals, label='actual', linestyle='--', color='blue')
     plt.plot(temp_x_vals, temp_pred_vals, label='preds', linestyle='-', color='red')
     plt.ylabel(f'normalized indel freq')
-    plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f}')
+    plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
     plt.savefig(path)
 
 def make_prediction(model, seq, TARGET_STD, TARGET_MEAN):
