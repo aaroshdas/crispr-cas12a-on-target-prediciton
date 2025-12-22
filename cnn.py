@@ -71,7 +71,7 @@ model.summary()
 
 #make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT", TARGET_STD, TARGET_MEAN) #14.711302
 
-history = model.fit(x_train, y_train, epochs=8, batch_size =32, validation_data=(x_val, y_val))
+history = model.fit(x_train, y_train, epochs=10, batch_size =32, validation_data=(x_val, y_val))
 model.save("./weights/cnn_model.keras")
 
 
