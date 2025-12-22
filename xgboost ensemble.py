@@ -59,7 +59,7 @@ print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
 #original 4#
 MAX_POOLING_LAYER_INDEX = 4
 
-#RESIDUAL CNN 
+#RESIDUAL CNN
 model,MAX_POOLING_LAYER_INDEX = xgboost_ensemble_cnn_models.build_residual_cnn(x_train)
 
 #model,MAX_POOLING_LAYER_INDEX= xgboost_ensemble_cnn_models.build_standard_cnn(x_train)
