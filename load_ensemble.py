@@ -9,7 +9,9 @@ from xgboost_ensemble_cnn_models import get_residual_cnn_pooling_index
 from data_loader import filter_df
 
 dataset_path = "./datasets/"
+#test_path = "Processed_Data_Modified_Seqs.csv"
 test_path = "Kim_2018_Test.csv"
+
 
 weights_path = "./weights/saved_models/ensemble/"
 
@@ -53,7 +55,7 @@ def compare_pred(test_df):
     
     test_df["Indel frequency"] = (test_df["Indel frequency"]- TARGET_MEAN) / TARGET_STD
     
-    plot_predictions_xg_boost(len(test_df), test_df, "./cnn_xgb_graphs/tests/test_predictions_plot.png", embedding_model, xgb_model)
+    plot_predictions_xg_boost(len(test_df), test_df, f'./cnn_xgb_graphs/tests/test_predictions_plot_{test_path}.png', embedding_model, xgb_model)
     
     test_df["Indel frequency"] = (test_df["Indel frequency"]* TARGET_STD) + TARGET_MEAN
     
