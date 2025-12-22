@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers
+from tensorflow.keras import layers, models, regularizers # type: ignore
 
 def residual_block(filters, kernel_size=3, dilation_rate=1):
     def block(x):
@@ -69,8 +69,10 @@ def build_residual_cnn(x_train):
     model = build_residual_dilated_cnn(seq_len)
     model.summary()
     #model, pooling layer index
-    return model, 25
+    return model, get_residual_cnn_pooling_index()
 
+def get_residual_cnn_pooling_index():
+    return 25
 
 def build_standard_cnn(x_train):
     model = models.Sequential([
