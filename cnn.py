@@ -19,24 +19,24 @@ test_path = "Kim_2018_Test.csv"
 
 
 
-temp_train_df= filter_df(pd.read_csv(dataset_path + train_path))
 
 
-temp_test_df= filter_df(pd.read_csv(dataset_path + test_path))
+COMBINED_DF= filter_df(pd.read_csv(dataset_path + train_path))
 
+TEST_DF= filter_df(pd.read_csv(dataset_path + test_path))
 
-COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
+# COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
 
 print(COMBINED_DF.head())
 
-TARGET_MEAN = COMBINED_DF['Indel frequency'] .mean()
-TARGET_STD = COMBINED_DF['Indel frequency'].std()
 
-#normalize indel frequnecy
+TARGET_MEAN = np.load("./weights/target_mean.npy")
+TARGET_STD  = np.load("./weights/target_std.npy")
+
+
 COMBINED_DF['Indel frequency'] = (COMBINED_DF['Indel frequency'] - TARGET_MEAN) / TARGET_STD
+TEST_DF['Indel frequency'] = (TEST_DF['Indel frequency'] - TARGET_MEAN) / TARGET_STD
 
-TEST_DF = COMBINED_DF.iloc[-100:]
-COMBINED_DF = COMBINED_DF.iloc[:-100]
 
 print(COMBINED_DF.head())
 print("total samples", len(COMBINED_DF))
@@ -61,7 +61,7 @@ model.summary()
 
 #make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT", TARGET_STD, TARGET_MEAN) #14.711302
 
-history = model.fit(x_train, y_train, epochs=10, batch_size =32, validation_data=(x_val, y_val))
+history = model.fit(x_train, y_train, epochs=60, batch_size =32, validation_data=(x_val, y_val))
 model.save("./weights/cnn_model.keras")
 
 
