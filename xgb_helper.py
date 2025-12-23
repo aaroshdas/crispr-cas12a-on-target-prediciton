@@ -54,12 +54,15 @@ def plot_predictions_xg_boost(total_x_vals, COMBINED_DF, path, embedding_model, 
 
 def graph_xgb_model_history(history, path):
     #loss vals
-    val = history['validation_0']['rmse']
+    metric = "mae"
+    #metric = "rmse"
+
+    val = history['validation_0'][metric]
 
     plt.figure(figsize=(12, 4))
     plt.plot(val)
-    plt.title('model rmse')
-    plt.ylabel('rmse')
+    plt.title(f'model {metric}')
+    plt.ylabel(metric)
     plt.xlabel('estimators')
     plt.legend(['val'])
 

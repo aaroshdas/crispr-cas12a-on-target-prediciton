@@ -50,7 +50,7 @@ def build_residual_dilated_cnn(seq_len=34):
     avg_pool = layers.GlobalAveragePooling1D()(x)
     x = layers.Concatenate()([max_pool, avg_pool])
 
-    x = layers.Dense(96,activation="relu",kernel_regularizer=regularizers.l2(1e-4))(x)
+    x = layers.Dense(96,activation="relu",kernel_regularizer=regularizers.l2(1e-4), name="embedding")(x)
     x = layers.Dropout(0.4)(x)
 
     out = layers.Dense(1, activation="linear")(x)
@@ -71,13 +71,9 @@ def build_residual_cnn(x_train):
     model = build_residual_dilated_cnn(seq_len)
     model.summary()
     #model, pooling layer index
-    print(model.layers[get_residual_cnn_pooling_index()].name)
-    return model, get_residual_cnn_pooling_index()
+    return model
 
-def get_residual_cnn_pooling_index():
-    #-4 = global max pooling layer
-    #-3 = dense layer 
-    return -3
+
 
 def build_standard_cnn(x_train):
     model = models.Sequential([
@@ -110,4 +106,4 @@ def build_standard_cnn(x_train):
         layers.Dense(1, activation='linear')
     ])
     #model, pooling layer index
-    return model, 4
+    return model

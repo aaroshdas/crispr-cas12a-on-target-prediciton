@@ -1,3 +1,5 @@
+#NEED TO UPDATE PRED CALCS TO INCLUDE RESIDUALS
+
 import pandas as pd
 import numpy as np
 import tensorflow as tf
@@ -5,7 +7,6 @@ from tensorflow.keras import models # type: ignore
 import xgboost as xgb
 from cnn_helper import convert_to_one_hot
 from xgb_helper import plot_predictions_xg_boost
-from xgboost_ensemble_cnn_models import get_residual_cnn_pooling_index
 from data_loader import filter_df
 
 dataset_path = "./datasets/"
@@ -18,7 +19,6 @@ weights_path = "./weights/saved_models/ensemble/"
 cnn_model_path = weights_path+ "embeddings_01.keras"
 xgb_model_path= weights_path+ "xgb_01.json"
 
-MAX_POOLING_LAYER_INDEX = get_residual_cnn_pooling_index()
 
 
 
@@ -32,7 +32,7 @@ cnn_model = tf.keras.models.load_model(cnn_model_path)
 
 embedding_model = models.Model(
     inputs=cnn_model.inputs,
-    outputs=cnn_model.layers[MAX_POOLING_LAYER_INDEX].output
+    outputs=cnn_model.get_layer("embedding").output
 )
 
 xgb_model = xgb.XGBRegressor()
