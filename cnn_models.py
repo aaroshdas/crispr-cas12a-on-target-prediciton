@@ -29,5 +29,5 @@ def load_standard_model(x_train):
 
 
 def load_residual_model(x_train):
-        model, _ = xgboost_ensemble_cnn_models.build_residual_cnn(x_train)
+        model = xgboost_ensemble_cnn_models.build_residual_cnn(x_train)
         return model

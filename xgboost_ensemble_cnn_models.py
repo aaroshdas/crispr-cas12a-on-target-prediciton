@@ -74,7 +74,7 @@ def build_residual_dilated_cnn(seq_len=34):
 def build_residual_cnn(x_train):
     seq_len = x_train.shape[1]
     model = build_residual_dilated_cnn(seq_len)
-    model.summary()
+    # model.summary()
     #model, pooling layer index
     return model
 
