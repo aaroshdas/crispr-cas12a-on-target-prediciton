@@ -48,9 +48,9 @@ def build_residual_dilated_cnn(seq_len=34):
 
     max_pool = layers.GlobalMaxPooling1D()(x)
     avg_pool = layers.GlobalAveragePooling1D()(x)
-    x = layers.Concatenate()([max_pool, avg_pool])
+    x = layers.Concatenate(name="embedding")([max_pool, avg_pool])
 
-    x = layers.Dense(96,activation="relu",kernel_regularizer=regularizers.l2(1e-4), name="embedding")(x)
+    x = layers.Dense(96,activation="relu",kernel_regularizer=regularizers.l2(1e-4), name="embedding_2")(x)
     x = layers.Dropout(0.4)(x)
 
     out = layers.Dense(1, activation="linear")(x)
@@ -63,6 +63,11 @@ def build_residual_dilated_cnn(seq_len=34):
         loss="mse",
         metrics=["mae"]
     )
+    # model.compile(
+    #     optimizer=tf.keras.optimizers.Adam(2e-4),
+    #     loss=tf.keras.losses.Huber(delta=1.0),
+    #     metrics=["mae"]
+    # )
 
     return model
 
