@@ -83,4 +83,23 @@ def load_multitask_model(x_train):
 
         return model
 
-      
+def build_ranking_model(model):
+    embedding_model = models.Model(model.input,model.get_layer("embedding").output)
+
+    xi = layers.Input(shape=(34, 4))
+    xj = layers.Input(shape=(34, 4))
+
+    embedded_i = embedding_model(xi)
+    embedded_j = embedding_model(xj)
+
+    diff = layers.Subtract()([embedded_i, embedded_j])
+    out = layers.Dense(1)(diff)
+
+    rank_model = models.Model([xi, xj], out)
+    rank_model.compile(
+        optimizer=tf.keras.optimizers.Adam(5e-4),
+        loss=tf.keras.losses.BinaryCrossentropy(from_logits=True),
+        metrics=["accuracy"]
+    )
+
+    return rank_model

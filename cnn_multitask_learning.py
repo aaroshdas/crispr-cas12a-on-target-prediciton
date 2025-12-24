@@ -4,7 +4,6 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: 
 from sklearn.model_selection import train_test_split
 import multitask_cnn_helper
 import cnn_helper
-
 import numpy as np
 
 import multitask_models
@@ -79,7 +78,34 @@ model, history = train_model(60)
 
 model.save("./weights/mtl_cnn_model.keras")
 
-#add pairing
+# pairwise ranking model
+def get_pairs(x, y, total_num_pairs, min_diff):
+    xi =[]
+    xj=[] 
+    labels = []
+
+    while len(xi) < total_num_pairs:
+        i, j = np.random.randint(0, len(y), size=2)
+        if abs(y[i] - y[j]) < min_diff:
+            continue
+        xi.append(x[i])
+        xj.append(x[j])
+        if(y[i] > y[j]):
+            labels.append(1.0)
+        else:
+            labels.append(0.0)
+
+    return np.array(xi), np.array(xj), np.array(labels)
+
+
+
+rank_model = multitask_models.build_ranking_model(model)
+rank_model.summary()
+for k in range(15):
+    xi, xj, y_rank = get_pairs(x_train, y_train,256,0.4)
+    rank_model.train_on_batch([xi, xj], y_rank)
+    print(f'epoch: {k}', xi.shape, xj.shape, y_rank.shape)
+print("ranking model trained")
 
 multitask_cnn_helper.mt_graph_model_history(history, "mtl_graphs/mae_model_history.png", "mae")
 multitask_cnn_helper.mt_plot_predictions(model, len(TEST_DF), TEST_DF, "mtl_graphs/predictions_plot.png")
