@@ -71,7 +71,7 @@ def make_prediction(model, seq, TARGET_STD, TARGET_MEAN):
 
 
 def temp_k_fold_val(raw_x_vals, raw_y_vals, train_model, epochs):
-    N_SPLITS = 3
+    N_SPLITS = 4
     kf = KFold(n_splits=N_SPLITS, shuffle=True, random_state=42)
     fold_histories = []
     fold_metrics = []

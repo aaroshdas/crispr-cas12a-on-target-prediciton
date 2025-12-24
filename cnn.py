@@ -42,8 +42,6 @@ raw_x_vals = np.array([cnn_helper.convert_to_one_hot(seq, ) for seq in train_seq
 raw_y_vals = COMBINED_DF["Indel frequency"].values.astype(float)
 
 
-x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_size=0.15)
-
 def train_model(x_train, y_train, x_val, y_val, epochs_):
     #model = cnn_models.load_standard_model(x_train)
     model = cnn_models.load_residual_model(x_train)
@@ -55,9 +53,11 @@ def train_model(x_train, y_train, x_val, y_val, epochs_):
     history = model.fit(x_train, y_train, epochs=epochs_, batch_size =32, validation_data=(x_val, y_val), callbacks=[early_stopping, reduce_lr])
     return model,history
 
-cnn_helper.temp_k_fold_val(raw_x_vals, raw_y_vals, x_val, y_val, train_model, 60)
+cnn_helper.temp_k_fold_val(raw_x_vals, raw_y_vals, train_model, 60)
 
 # training of model to save
+x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_size=0.15)
+
 model, history = train_model(x_train, y_train, x_val, y_val,60)
 model.save("./weights/cnn_model.keras")
 
