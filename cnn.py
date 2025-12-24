@@ -58,7 +58,7 @@ def train_model(x_train, y_train, x_val, y_val, epochs_):
 
 #temp_k_fold_val(raw_x_vals, raw_y_vals, x_val, y_val, train_model, epochs)
 
-#final training of model to save
+# training of model to save
 model, history = train_model(x_train, y_train, x_val, y_val,60)
 model.save("./weights/cnn_model.keras")
 

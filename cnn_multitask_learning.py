@@ -1,10 +1,8 @@
-#cnn 
-#conda activate cc12on
+#multi task learning
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers # type: ignore
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from cnn_helper import *
 
@@ -19,16 +17,9 @@ train_path = "Kim_2018_Train.csv"
 test_path = "Kim_2018_Test.csv"
 
 
-
-
-
 COMBINED_DF= filter_df(pd.read_csv(dataset_path + train_path))
-
 TEST_DF= filter_df(pd.read_csv(dataset_path + test_path))
 
-# COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
-
-print(COMBINED_DF.head())
 
 
 TARGET_MEAN = np.load("./weights/target_mean.npy")
@@ -42,18 +33,21 @@ TEST_DF['Indel frequency'] = (TEST_DF['Indel frequency'] - TARGET_MEAN) / TARGET
 print(COMBINED_DF.head())
 print("total samples", len(COMBINED_DF))
 
-# print(convert_to_one_hot(test_df.loc[0, "Input seq"]))
-
 train_sequences = COMBINED_DF["Input seq"].values
 raw_x_vals = np.array([convert_to_one_hot(seq, ) for seq in train_sequences])
-
 raw_y_vals = COMBINED_DF["Indel frequency"].values.astype(float)
 
 
 x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_size=0.15)
 
-print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
+# def calc_new_features():
+#     y = y_train
+#     med = np.median(y)
+#     bin_labels = (y > med).astype(np.float32)
+#     sorted_index = np.argsort(y)
+#     return bin_labels, sorted_index
 
+# binary_labels, sorted_index = calc_new_features()
 
 def train_model(x_train, y_train, x_val, y_val, epochs_):
     #model = cnn_models.load_standard_model(x_train)
@@ -66,24 +60,11 @@ def train_model(x_train, y_train, x_val, y_val, epochs_):
     history = model.fit(x_train, y_train, epochs=epochs_, batch_size =32, validation_data=(x_val, y_val), callbacks=[early_stopping, reduce_lr])
     return model,history
 
-#temp k fold val
+#temp_k_fold_val(raw_x_vals, raw_y_vals, x_val, y_val, train_model, epochs)
 
-#temp_k_fold_val()
-
-
-
-#final training of model to save
 model, history = train_model(x_train, y_train, x_val, y_val,60)
 model.save("./weights/cnn_model.keras")
 
 
 graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
-# graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
-
-
 plot_predictions(model, len(TEST_DF), TEST_DF, "cnn_graphs/predictions_plot.png")
-
-
-
-#plot_predictions(model, 100, COMBINED_DF, "cnn_graphs/predictions_plot.png")
-#make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT", TARGET_STD, TARGET_MEAN) #14.711302
