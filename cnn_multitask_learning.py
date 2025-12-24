@@ -77,9 +77,9 @@ def train_model(epochs_):
 
 model, history = train_model(60)
 
-model.save("./weights/cnn_model.keras")
+model.save("./weights/mtl_cnn_model.keras")
 
 #add pairing
 
-multitask_cnn_helper.mt_graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
-multitask_cnn_helper.mt_plot_predictions(model, len(TEST_DF), TEST_DF, "cnn_graphs/predictions_plot.png")
+multitask_cnn_helper.mt_graph_model_history(history, "mtl_graphs/mae_model_history.png", "mae")
+multitask_cnn_helper.mt_plot_predictions(model, len(TEST_DF), TEST_DF, "mtl_graphs/predictions_plot.png")
