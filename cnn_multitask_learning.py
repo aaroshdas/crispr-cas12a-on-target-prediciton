@@ -49,7 +49,6 @@ def train_model(epochs_):
     model = multitask_models.load_multitask_model(x_train)
 
     #overwrites compiler
-    # model.compile(optimizer='adam', loss='mean_squared_error', metrics=['root_mean_squared_error','mae'])
     early_stopping= EarlyStopping(patience=10, restore_best_weights=True, monitor="val_regression_mae", mode="min")
     reduce_lr= ReduceLROnPlateau(patience=5, monitor="val_regression_mae", mode="min")
     history = model.fit(
@@ -101,10 +100,10 @@ def get_pairs(x, y, total_num_pairs, min_diff):
 
 rank_model = multitask_models.build_ranking_model(model)
 rank_model.summary()
-for k in range(15):
-    xi, xj, y_rank = get_pairs(x_train, y_train,256,0.4)
+for k in range(20):
+    xi, xj, y_rank = get_pairs(x_train, y_train,256,0.2)
     rank_model.train_on_batch([xi, xj], y_rank)
-    print(f'epoch: {k}', xi.shape, xj.shape, y_rank.shape)
+    print(f'epoch: {k}')
 print("ranking model trained")
 
 multitask_cnn_helper.mt_graph_model_history(history, "mtl_graphs/mae_model_history.png", "mae")

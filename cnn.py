@@ -2,7 +2,6 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
 import cnn_helper
 
 import numpy as np
@@ -56,7 +55,7 @@ def train_model(x_train, y_train, x_val, y_val, epochs_):
     history = model.fit(x_train, y_train, epochs=epochs_, batch_size =32, validation_data=(x_val, y_val), callbacks=[early_stopping, reduce_lr])
     return model,history
 
-#temp_k_fold_val(raw_x_vals, raw_y_vals, x_val, y_val, train_model, epochs)
+cnn_helper.temp_k_fold_val(raw_x_vals, raw_y_vals, x_val, y_val, train_model, 60)
 
 # training of model to save
 model, history = train_model(x_train, y_train, x_val, y_val,60)

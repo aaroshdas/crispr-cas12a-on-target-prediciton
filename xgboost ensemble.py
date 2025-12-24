@@ -98,7 +98,7 @@ xgb_model = xgb.XGBRegressor(
 # y_train_cnn = model.predict(x_train).squeeze()
 # y_val_cnn = model.predict(x_val).squeeze()
 # y_train_residual = y_train - y_train_cnn
-# y_val_residual   = y_val - y_val_cnn
+# y_val_residual = y_val - y_val_cnn
 # xgb_model.fit(x_train_embed, y_train_residual, eval_set=[(x_val_embed, y_val_residual)], verbose=True)
 
 xgb_model.fit(x_train_embed, y_train, eval_set=[(x_val_embed, y_val)], verbose=True)
