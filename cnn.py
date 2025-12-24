@@ -2,8 +2,8 @@
 #conda activate cc12on
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers # type: ignore
-from sklearn.model_selection import train_test_split, KFold
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
+from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from cnn_helper import *
 
@@ -51,43 +51,18 @@ raw_y_vals = COMBINED_DF["Indel frequency"].values.astype(float)
 
 x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_size=0.15)
 
-print(x_train.shape, x_val.shape, y_train.shape, y_val.shape)
-
-
-
 def train_model(x_train, y_train, x_val, y_val, epochs_):
     #model = cnn_models.load_standard_model(x_train)
     model = cnn_models.load_residual_model(x_train)
 
     #overwrites compiler
-    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['root_mean_squared_error','mae'])
-
-    history = model.fit(x_train, y_train, epochs=epochs_, batch_size =32, validation_data=(x_val, y_val))
+    # model.compile(optimizer='adam', loss='mean_squared_error', metrics=['root_mean_squared_error','mae'])
+    early_stopping= EarlyStopping(patience=10, restore_best_weights=True)
+    reduce_lr= ReduceLROnPlateau(patience=5)
+    history = model.fit(x_train, y_train, epochs=epochs_, batch_size =32, validation_data=(x_val, y_val), callbacks=[early_stopping, reduce_lr])
     return model,history
 
-#temp k fold val
-def temp_k_fold_val():
-    N_SPLITS = 3
-    kf = KFold(n_splits=N_SPLITS, shuffle=True, random_state=42)
-    fold_histories = []
-    fold_metrics = []
-
-    for fold, (train_idx, val_idx) in enumerate(kf.split(raw_x_vals)):
-        kf_x_train, kf_x_val = raw_x_vals[train_idx], raw_x_vals[val_idx]
-        kf_y_train, kf_y_val = raw_y_vals[train_idx], raw_y_vals[val_idx]
-
-        kf_model, kf_history = train_model(kf_x_train, kf_y_train, kf_x_val, kf_y_val, 30)
-        
-        print(f"fold {fold + 1}/{N_SPLITS}")
-        fold_histories.append(kf_history)
-        res = kf_model.evaluate(x_val, y_val, verbose=0)
-        fold_metrics.append(res)
-        print(f'loss {res[0]:.4f} - rmse: {res[1]:.4f} - mae: {res[2]:.4f}')
-        print("")
-    print("k-fold results")
-    print(fold_metrics)
-
-#temp_k_fold_val()
+#temp_k_fold_val(raw_x_vals, raw_y_vals, x_val, y_val, train_model, epochs)
 
 
 
@@ -97,7 +72,7 @@ model.save("./weights/cnn_model.keras")
 
 
 graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
-graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
+# graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
 
 
 plot_predictions(model, len(TEST_DF), TEST_DF, "cnn_graphs/predictions_plot.png")

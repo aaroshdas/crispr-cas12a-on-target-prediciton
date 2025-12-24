@@ -1,8 +1,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import tensorflow as tf
+from sklearn.model_selection import KFold
 from scipy.stats import spearmanr
  
 
@@ -68,3 +67,25 @@ def make_prediction(model, seq, TARGET_STD, TARGET_MEAN):
     temp_batch_seq = convert_to_one_hot(seq)[np.newaxis, ...]
     pred = model.predict(temp_batch_seq, verbose=False)
     print(f'\n {pred * TARGET_STD + TARGET_MEAN}')
+
+
+def temp_k_fold_val(raw_x_vals, raw_y_vals, train_model, epochs):
+    N_SPLITS = 3
+    kf = KFold(n_splits=N_SPLITS, shuffle=True, random_state=42)
+    fold_histories = []
+    fold_metrics = []
+
+    for fold, (train_idx, val_idx) in enumerate(kf.split(raw_x_vals)):
+        kf_x_train, kf_x_val = raw_x_vals[train_idx], raw_x_vals[val_idx]
+        kf_y_train, kf_y_val = raw_y_vals[train_idx], raw_y_vals[val_idx]
+
+        kf_model, kf_history = train_model(kf_x_train, kf_y_train, kf_x_val, kf_y_val, epochs)
+        
+        print(f"fold {fold + 1}/{N_SPLITS}")
+        fold_histories.append(kf_history)
+        res = kf_model.evaluate(kf_x_val, kf_y_val, verbose=0)
+        fold_metrics.append(res)
+        print(f'loss {res[0]:.4f} - rmse: {res[1]:.4f} - mae: {res[2]:.4f}')
+        print("")
+    print("k-fold results")
+    print(fold_metrics)
