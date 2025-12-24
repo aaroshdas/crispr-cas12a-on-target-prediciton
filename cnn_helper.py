@@ -62,6 +62,7 @@ def plot_predictions(model, total_x_vals, COMBINED_DF, path):
     plt.ylabel(f'normalized indel freq')
     plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
     plt.savefig(path)
+    print(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
 
 def make_prediction(model, seq, TARGET_STD, TARGET_MEAN):
     temp_batch_seq = convert_to_one_hot(seq)[np.newaxis, ...]

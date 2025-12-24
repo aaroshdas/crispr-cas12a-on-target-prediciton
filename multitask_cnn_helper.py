@@ -54,3 +54,4 @@ def mt_plot_predictions(model, total_x_vals, COMBINED_DF, path):
     plt.ylabel(f'normalized indel freq')
     plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
     plt.savefig(path)
+    print(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
