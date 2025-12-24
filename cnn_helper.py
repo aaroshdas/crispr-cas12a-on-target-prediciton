@@ -86,7 +86,8 @@ def temp_k_fold_val(raw_x_vals, raw_y_vals, train_model, epochs):
         fold_histories.append(kf_history)
         res = kf_model.evaluate(kf_x_val, kf_y_val, verbose=0)
         fold_metrics.append(res)
-        print(f'loss {res[0]:.4f} - rmse: {res[1]:.4f} - mae: {res[2]:.4f}')
+        print(f'loss {res[0]:.4f} - mae: {res[1]:.4f}')
         print("")
     print("k-fold results")
-    print(fold_metrics)
+    for k in range(len(fold_metrics)):
+        print(f"fold {k + 1} | loss: {fold_metrics[k][0]:.4f} - mae: {fold_metrics[k][1]:.4f}")
