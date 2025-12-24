@@ -37,7 +37,7 @@ def mt_plot_predictions(model, total_x_vals, COMBINED_DF, path):
         temp_batch_seq = cnn_helper.convert_to_one_hot(seq)[np.newaxis, ...]
     
         pred = model.predict(temp_batch_seq, verbose=False)
-        temp_pred_vals.append(pred[0][0])
+        temp_pred_vals.append(pred["regression"][0][0])
 
     np_y_vals = np.array(temp_y_vals)
     np_pred_vals = np.array(temp_pred_vals)

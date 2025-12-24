@@ -1,6 +1,5 @@
 #multi task learning
 import pandas as pd
-import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
 from sklearn.model_selection import train_test_split
 import multitask_cnn_helper
@@ -8,7 +7,7 @@ import cnn_helper
 
 import numpy as np
 
-import cnn_models
+import multitask_models
 from data_loader import filter_df
 
 
@@ -39,21 +38,21 @@ x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_s
 
 
 
-median = np.median(y_train)
-y_train_binary = (y_train > median).astype(np.float32)
-y_val_binary   = (y_val > median).astype(np.float32)
+# median = np.median(y_train)
+y_train_binary = (y_train > 0.0).astype(np.float32)
+y_val_binary   = (y_val > 0.0).astype(np.float32)
 
 
 # binary_labels, sorted_index = calc_new_features()
 
 def train_model(epochs_):
     #model = cnn_models.load_standard_model(x_train)
-    model = cnn_models.load_multitask_model(x_train)
+    model = multitask_models.load_multitask_model(x_train)
 
     #overwrites compiler
     # model.compile(optimizer='adam', loss='mean_squared_error', metrics=['root_mean_squared_error','mae'])
-    early_stopping= EarlyStopping(patience=10, restore_best_weights=True, monitor="val_regression_mae")
-    reduce_lr= ReduceLROnPlateau(patience=5, monitor="val_regression_mae")
+    early_stopping= EarlyStopping(patience=10, restore_best_weights=True, monitor="val_regression_mae", mode="min")
+    reduce_lr= ReduceLROnPlateau(patience=5, monitor="val_regression_mae", mode="min")
     history = model.fit(
        x_train,
         {
