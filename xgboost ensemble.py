@@ -1,13 +1,12 @@
 #xg boost
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras import layers, models, regularizers, Model # type: ignore
+from tensorflow.keras import models # type: ignore
 from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
-from cnn_helper import *
+import cnn_helper
 import numpy as np
 import xgboost as xgb  
-from xgb_helper import *
+import xgb_helper
 import xgboost_ensemble_cnn_models 
 from data_loader import filter_df
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
@@ -44,7 +43,7 @@ TEST_DF['Indel frequency'] = (TEST_DF['Indel frequency'] - TARGET_MEAN) / TARGET
 
 train_sequences = COMBINED_DF["Input seq"].values
 
-raw_x_vals = np.array([convert_to_one_hot(seq, ) for seq in train_sequences])
+raw_x_vals = np.array([cnn_helper.convert_to_one_hot(seq, ) for seq in train_sequences])
 raw_y_vals = COMBINED_DF["Indel frequency"].values.astype(float)
 
 
@@ -65,7 +64,7 @@ early_stopping= EarlyStopping(patience=10, restore_best_weights=True)
 reduce_lr= ReduceLROnPlateau(patience=5)
 
 history = model.fit(x_train, y_train, epochs=60, batch_size=32, validation_data=(x_val, y_val), callbacks=[early_stopping, reduce_lr])
-graph_model_history(history, "cnn_xgb_graphs/cnn_embeddings_history.png", "mae")
+cnn_helper.graph_model_history(history, "cnn_xgb_graphs/cnn_embeddings_history.png", "mae")
 
 
 model.build(input_shape=(None, x_train.shape[1], 4))
@@ -78,8 +77,8 @@ x_val_embed = embedding_model(x_val, training=False).numpy()
 
 print("embedding shape", x_train_embed.shape)
 
-tnse_embedding_visualization(x_train_embed, y_train)
-umap_embedding_visualization(x_train_embed, y_train)
+xgb_helper.tnse_embedding_visualization(x_train_embed, y_train)
+xgb_helper.umap_embedding_visualization(x_train_embed, y_train)
 
 xgb_model = xgb.XGBRegressor(
     n_estimators=850,
@@ -107,10 +106,10 @@ xgb_model.save_model("./weights/cnn_xgb_model.json")
 
 
 
-plot_predictions_xg_boost(len(TEST_DF), TEST_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
+xgb_helper.plot_predictions_xg_boost(len(TEST_DF), TEST_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
 
 #plot_predictions_xg_boost(100, COMBINED_DF, "cnn_xgb_graphs/predictions_plot.png", embedding_model,xgb_model)
 
 history = xgb_model.evals_result()
 
-graph_xgb_model_history(history, "cnn_xgb_graphs/xgb_model_history.png")
+xgb_helper.graph_xgb_model_history(history, "cnn_xgb_graphs/xgb_model_history.png")

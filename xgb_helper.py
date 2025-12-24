@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from cnn_helper import *
+import cnn_helper
 import xgboost as xgb
 
 import umap
@@ -28,7 +28,7 @@ def plot_predictions_xg_boost(total_x_vals, COMBINED_DF, path, embedding_model, 
         temp_y_vals.append(COMBINED_DF.iloc[i, 1])
         temp_x_vals.append(i)
         seq = COMBINED_DF.iloc[i,  0]
-        temp_batch_seq = convert_to_one_hot(str(seq))[np.newaxis, ...]
+        temp_batch_seq = cnn_helper.convert_to_one_hot(str(seq))[np.newaxis, ...]
     
         pred = predict_sequence_xg_boost(temp_batch_seq, embedding_model, xgb_model)
         temp_pred_vals.append(pred)

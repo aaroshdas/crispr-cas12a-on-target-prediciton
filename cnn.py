@@ -3,7 +3,7 @@ import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-from cnn_helper import *
+import cnn_helper
 
 import numpy as np
 
@@ -38,7 +38,7 @@ print(COMBINED_DF.head())
 print("total samples", len(COMBINED_DF))
 
 train_sequences = COMBINED_DF["Input seq"].values
-raw_x_vals = np.array([convert_to_one_hot(seq, ) for seq in train_sequences])
+raw_x_vals = np.array([cnn_helper.convert_to_one_hot(seq, ) for seq in train_sequences])
 
 raw_y_vals = COMBINED_DF["Indel frequency"].values.astype(float)
 
@@ -63,8 +63,8 @@ model, history = train_model(x_train, y_train, x_val, y_val,60)
 model.save("./weights/cnn_model.keras")
 
 
-graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
-plot_predictions(model, len(TEST_DF), TEST_DF, "cnn_graphs/predictions_plot.png")
+cnn_helper.graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
+cnn_helper.plot_predictions(model, len(TEST_DF), TEST_DF, "cnn_graphs/predictions_plot.png")
 
 
 # graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
