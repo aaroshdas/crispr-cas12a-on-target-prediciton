@@ -1,5 +1,3 @@
-#cnn 
-#conda activate cc12on
 import pandas as pd
 import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau # type: ignore
@@ -20,11 +18,9 @@ test_path = "Kim_2018_Test.csv"
 
 
 
-
 COMBINED_DF= filter_df(pd.read_csv(dataset_path + train_path))
 
 TEST_DF= filter_df(pd.read_csv(dataset_path + test_path))
-
 # COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
 
 print(COMBINED_DF.head())
@@ -40,8 +36,6 @@ TEST_DF['Indel frequency'] = (TEST_DF['Indel frequency'] - TARGET_MEAN) / TARGET
 
 print(COMBINED_DF.head())
 print("total samples", len(COMBINED_DF))
-
-# print(convert_to_one_hot(test_df.loc[0, "Input seq"]))
 
 train_sequences = COMBINED_DF["Input seq"].values
 raw_x_vals = np.array([convert_to_one_hot(seq, ) for seq in train_sequences])
@@ -64,20 +58,15 @@ def train_model(x_train, y_train, x_val, y_val, epochs_):
 
 #temp_k_fold_val(raw_x_vals, raw_y_vals, x_val, y_val, train_model, epochs)
 
-
-
 #final training of model to save
 model, history = train_model(x_train, y_train, x_val, y_val,60)
 model.save("./weights/cnn_model.keras")
 
 
 graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
-# graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
-
-
 plot_predictions(model, len(TEST_DF), TEST_DF, "cnn_graphs/predictions_plot.png")
 
 
-
+# graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
 #plot_predictions(model, 100, COMBINED_DF, "cnn_graphs/predictions_plot.png")
 #make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT", TARGET_STD, TARGET_MEAN) #14.711302
