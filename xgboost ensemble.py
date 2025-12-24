@@ -84,7 +84,7 @@ umap_embedding_visualization(x_train_embed, y_train)
 xgb_model = xgb.XGBRegressor(
     n_estimators=850,
     learning_rate=0.02,
-    max_depth=3,
+    max_depth=4,
     early_stopping_rounds=40,
 
     subsample=0.7,
