@@ -21,7 +21,6 @@ xgb_model_path= weights_path+ "xgb_01.json"
 
 
 
-
 test_df = filter_df(pd.read_csv(dataset_path + test_path))[:200]
 
 
