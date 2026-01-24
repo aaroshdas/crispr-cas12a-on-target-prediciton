@@ -18,8 +18,8 @@ test_path = "Kim_2018_Test.csv"
 
 
 COMBINED_DF= filter_df(pd.read_csv(dataset_path + train_path))
-
 TEST_DF= filter_df(pd.read_csv(dataset_path + test_path))
+
 # COMBINED_DF = pd.concat([temp_train_df,temp_test_df])
 
 print(COMBINED_DF.head())
