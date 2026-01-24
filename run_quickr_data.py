@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras import models
+# from tensorflow.keras import models
 from cnn_helper import convert_to_one_hot
 from scipy.stats import spearmanr
 from matplotlib import pyplot as plt
