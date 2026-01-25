@@ -69,7 +69,3 @@ cnn_helper.graph_model_history(history, "multi_feature_cnn_graphs/mae_model_hist
 
 cnn_helper.plot_multi_feature_prediction(model, TEST_DF, "multi_feature_cnn_graphs/predictions_plot.png")
 
-
-# graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
-#plot_predictions(model, 100, COMBINED_DF, "cnn_graphs/predictions_plot.png")
-#make_prediction(model, "AGCGTTTAAAAAACATCGAACGCATCTGCTGCCT", TARGET_STD, TARGET_MEAN) #14.711302
