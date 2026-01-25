@@ -90,3 +90,28 @@ def temp_k_fold_val(raw_x_vals, raw_y_vals, train_model, epochs, splits=4):
     print("k-fold results")
     for k in range(len(fold_metrics)):
         print(f"fold {k + 1} | loss: {fold_metrics[k][0]:.4f} - mae: {fold_metrics[k][1]:.4f}")
+
+
+
+def plot_multi_feature_prediction(model, COMBINED_DF, path):
+    
+    X_seq_test = np.stack([convert_to_one_hot(seq) for seq in COMBINED_DF.iloc[:, 0]]).astype("float32")
+    X_feat_test = COMBINED_DF[["gc content", "pam_prox_at_frac", "pos18_is_c"]].values.astype("float32")
+    
+    y_pred = model.predict([X_seq_test, X_feat_test], verbose=False).squeeze()
+    y_true = COMBINED_DF["Indel frequency"].values.astype(np.float32)
+
+
+    rmse = np.sqrt(np.mean((y_true -y_pred)**2))
+    mae = np.mean(np.abs(y_true - y_pred))
+    rho, p_value = spearmanr(y_true, y_pred)
+
+    x_val = np.linspace(0, len(y_true)-1, len(y_true))
+    
+    plt.figure(figsize=(15, 5))
+    plt.plot(x_val, y_true, label='actual', linestyle='--', color='blue')
+    plt.plot(x_val, y_pred, label='preds', linestyle='-', color='red')
+    plt.ylabel(f'normalized indel freq')
+    plt.xlabel(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
+    plt.savefig(path)
+    print(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
