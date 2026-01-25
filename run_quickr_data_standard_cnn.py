@@ -51,8 +51,8 @@ def proccess_seqs(seqs):
     return procssesed_seqs
 procssesed_seqs = proccess_seqs(seqs)
 
-for i in procssesed_seqs:
-    print(i)
+df['Context Sequence'] = procssesed_seqs
+df.to_csv('./quickr_data/processed_quickr_seqs.csv', index=False)
 
 TARGET_MEAN = np.load("./weights/target_mean.npy")
 TARGET_STD  = np.load("./weights/target_std.npy")
