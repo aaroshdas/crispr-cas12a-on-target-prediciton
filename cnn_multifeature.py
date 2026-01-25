@@ -50,17 +50,17 @@ def train_model(x_train, y_train, x_val, y_val, epochs_):
     history = model.fit(x_train, y_train, epochs=epochs_, batch_size =32, validation_data=(x_val, y_val), callbacks=[early_stopping, reduce_lr])
     return model,history
 
-cnn_helper.temp_k_fold_val(raw_x_vals, raw_y_vals, train_model, 60)
+# cnn_helper.temp_k_fold_val(raw_x_vals, raw_y_vals, train_model, 60)
 
 # training of model to save
 x_train, x_val, y_train, y_val = train_test_split(raw_x_vals, raw_y_vals, test_size=0.15)
 
 model, history = train_model(x_train, y_train, x_val, y_val,60)
-model.save("./weights/cnn_model.keras")
+model.save("./weights/multi_feature/weights.keras")
 
 
-cnn_helper.graph_model_history(history, "cnn_graphs/mae_model_history.png", "mae")
-cnn_helper.plot_predictions(model, len(TEST_DF), TEST_DF, "cnn_graphs/predictions_plot.png")
+cnn_helper.graph_model_history(history, "multi_feature_cnn_graphs/mae_model_history.png", "mae")
+cnn_helper.plot_predictions(model, len(TEST_DF), TEST_DF, "multi_feature_cnn_graphs/predictions_plot.png")
 
 
 # graph_model_history(history, "cnn_graphs/rmse_model_history.png", "root_mean_squared_error")
