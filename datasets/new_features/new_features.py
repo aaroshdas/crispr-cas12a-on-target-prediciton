@@ -11,7 +11,7 @@ old_dataset_path = "./quickr_data/"
 old_data_path = "processed_quickr_seqs.csv"
 
 dataset_path = "./quickr_data/"
-data_path = "NF_raw_quickr_seqs_csv"
+data_path = "NF_raw_quickr_seqs.csv"
 
 data_df = pd.read_csv(old_dataset_path + old_data_path)
 

@@ -24,7 +24,7 @@ def plot_predictions_from_df(test_df, path):
     plt.savefig(path)
     print(f'RMSE {rmse: .4f} | MAE {mae: .4f} | spearman rho {rho: .4f} | p-val {p_value:.4e}')
 
-file = './quickr_data/raw_quickr_seqs.csv'
+file = './quickr_data/NF_raw_quickr_seqs.csv'
 
 df = pd.read_csv(file)
 print(df.head())
