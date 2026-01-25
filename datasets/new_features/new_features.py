@@ -1,16 +1,19 @@
 import pandas as pd
 import numpy as np
-old_dataset_path = "./datasets/"
-old_train_path = "Kim_2018_Train.csv"
-old_test_path = "Kim_2018_Test.csv"
 
-dataset_path = "./datasets/new_features/"
-train_path = "NF_Kim_2018_Train.csv"
-test_path = "NF_Kim_2018_Test.csv"
+# old_dataset_path = "./datasets/"
+# old_data_path = "Kim_2018_Train.csv"
 
-df_train = pd.read_csv(old_dataset_path + old_train_path)
-df_test = pd.read_csv(old_dataset_path + old_test_path)
+# dataset_path = "./datasets/new_features/"
+# data_path = "NF_Kim_2018_Train.csv"
 
+old_dataset_path = "./quickr_data/"
+old_data_path = "quickr_data.csv"
+
+dataset_path = "./quickr_data/"
+data_path = "NF_quickr_data.csv"
+
+data_df = pd.read_csv(old_dataset_path + old_data_path)
 
 
 def gc_content(seq):
@@ -46,10 +49,8 @@ def add_features(df):
     return df
 
 
-df_train = add_features(df_train)
-df_test = add_features(df_test)
+data_df = add_features(data_df)
 
-print(df_train.head())
+print(data_df.head())
 
-df_train.to_csv(dataset_path + train_path)
-df_test.to_csv(dataset_path + test_path)    
+data_df.to_csv(dataset_path + data_path)
