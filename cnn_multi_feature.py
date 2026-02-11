@@ -11,7 +11,6 @@ import data_loader
 
 
 
-
 dataset_path = "./datasets/new_features/"
 train_path = "NF_Kim_2018_Train.csv"
 test_path = "NF_Kim_2018_Test.csv"
