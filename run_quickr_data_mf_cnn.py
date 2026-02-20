@@ -4,7 +4,7 @@ import tensorflow as tf
 # from tensorflow.keras import models
 from cnn_helper import convert_to_one_hot
 
-file = './quickr_data/NF_raw_quickr_seqs.csv'
+file = './quickr_data/quickr_seqs_new_features.csv'
 
 df = pd.read_csv(file)
 print(df.head())
