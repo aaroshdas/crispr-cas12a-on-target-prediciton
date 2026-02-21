@@ -5,6 +5,7 @@ import tensorflow as tf
 from cnn_helper import convert_to_one_hot
 
 file = './quickr_data/quickr_seqs_new_features.csv'
+#file = './quickr_data/quickr_seqs_new_features_shifted_right.csv'
 
 df = pd.read_csv(file)
 print(df.head())
@@ -38,6 +39,7 @@ print(df)
 result_path = "./quickr_data/full_results.csv"
 result_df = pd.read_csv(result_path)
 result_df['pred_mf'] = df["Indel frequency Prediction"].values
+#result_df['pred_mf_shifted_right'] = df["Indel frequency Prediction"].values
 
 result_df.to_csv(result_path, index=False)
 

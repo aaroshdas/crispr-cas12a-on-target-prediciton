@@ -12,6 +12,7 @@ old_data_path = "raw_quickr_seqs.csv"
 
 dataset_path = "./quickr_data/"
 data_path = "quickr_seqs_new_features.csv"
+# data_path = "quickr_seqs_new_features_shifted_right.csv"
 
 raw_data_df = pd.read_csv(old_dataset_path + old_data_path)
 
@@ -20,6 +21,7 @@ data_df = pd.DataFrame()
 shortened_seqs = []
 for i in raw_data_df["Context Sequence"]:
     shortened_seqs.append(i[:34])
+    # shortened_seqs.append(i[-34:])
 
 data_df["Context Sequence"] = shortened_seqs
 
