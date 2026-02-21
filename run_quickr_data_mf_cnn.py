@@ -33,3 +33,11 @@ df["Indel frequency Prediction"] = y_pred
 for i in y_pred:
     print(f'{i:.4f}')
 print(df)
+
+
+result_path = "./quickr_data/full_results.csv"
+result_df = pd.read_csv(result_path)
+result_df['pred_mf'] = df["Indel frequency Prediction"].values
+
+result_df.to_csv(result_path, index=False)
+

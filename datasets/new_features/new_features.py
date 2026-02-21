@@ -8,12 +8,20 @@ import numpy as np
 # data_path = "NF_Kim_2018_Train.csv"
 
 old_dataset_path = "./quickr_data/"
-old_data_path = "processed_quickr_seqs.csv"
+old_data_path = "raw_quickr_seqs.csv"
 
 dataset_path = "./quickr_data/"
-data_path = "NF_raw_quickr_seqs.csv"
+data_path = "quickr_seqs_new_features.csv"
 
-data_df = pd.read_csv(old_dataset_path + old_data_path)
+raw_data_df = pd.read_csv(old_dataset_path + old_data_path)
+
+data_df = pd.DataFrame()
+
+shortened_seqs = []
+for i in raw_data_df["Context Sequence"]:
+    shortened_seqs.append(i[:34])
+
+data_df["Context Sequence"] = shortened_seqs
 
 
 def gc_content(seq):
