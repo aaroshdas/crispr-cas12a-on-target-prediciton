@@ -28,12 +28,15 @@ def plot_predictions(pred_method, pred_vals, y_vals, path):
     results_df[pred_method] = [round(rmse, 4), round(mae,4), round(rho,4)]
 
 
-df = pd.read_csv('./quickr_data/full_results.csv')
+# df = pd.read_csv('./quickr_data/full_results.csv')
+df = pd.read_csv('./quickr_data/*full_results_cleaner_seqs.csv')
 
 results_df = pd.DataFrame()
 
 for i in df.columns:
     if i != "Score":
-        plot_predictions(i, df[i].values, df["Score"].values, f'./quickr_data/graphs/{i}_graph.png')
+        #plot_predictions(i, df[i].values, df["Score"].values, f'./quickr_data/graphs/{i}_graph.png')
+        plot_predictions(i, df[i].values, df["Score"].values, f'./quickr_data/*cleaner_data_graphs/{i}_graph.png')
 
-results_df.to_csv("./quickr_data/summary_results.csv", sep='\t', index =False)
+#results_df.to_csv("./quickr_data/summary_results.csv", sep='\t', index =False)
+results_df.to_csv("./quickr_data/summary_cleaner_results.csv", sep='\t', index =False)
