@@ -58,7 +58,7 @@ result_df.to_csv(result_path, index=False)
 
 
 
-result_path = "./quickr_data/full_results.csv"
-result_df = pd.read_csv(result_path)
-result_df['pred_refined_data'] = df["Indel frequency Prediction"].values[:len(result_df)]
-result_df.to_csv(result_path, index=False)
+# result_path = "./quickr_data/full_results.csv"
+# result_df = pd.read_csv(result_path)
+# result_df['pred_refined_data'] = df["Indel frequency Prediction"].values[:len(result_df)]
+# result_df.to_csv(result_path, index=False)
