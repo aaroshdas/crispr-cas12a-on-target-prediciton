@@ -4,7 +4,7 @@ import tensorflow as tf
 # from tensorflow.keras import models
 from cnn_helper import convert_to_one_hot
 
-file = './quickr_data/raw_quickr_seqs.csv'
+file = './quickr_data/shortened_cleaner_seqs.csv'
 
 df = pd.read_csv(file)
 print(df.head())
@@ -45,3 +45,20 @@ df["Indel frequency Prediction"] = y_pred
 for i in y_pred:
     print(f'{i:.4f}')
 print(df)
+
+result_path = "./quickr_data/*full_results_cleaner_seqs.csv"
+result_df = pd.read_csv(result_path)
+#result_df['pred'] = df["Indel frequency Prediction"].values
+result_df['pred_rev_comp'] = df["Indel frequency Prediction"].values
+
+# result_df= result_df.drop(columns=result_df.columns[1], axis=1)
+# print(result_df.head())
+
+result_df.to_csv(result_path, index=False)
+
+
+
+result_path = "./quickr_data/full_results.csv"
+result_df = pd.read_csv(result_path)
+result_df['pred_refined_data'] = df["Indel frequency Prediction"].values[:len(result_df)]
+result_df.to_csv(result_path, index=False)

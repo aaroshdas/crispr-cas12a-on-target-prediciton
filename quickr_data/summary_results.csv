@@ -1,4 +1,4 @@
-pred	pred_rescaled	pred_mf	enpamgb	deepcpf1	pred_mf_shifted_right
-0.2274	0.2721	0.2345	0.3517	0.2652	0.2364
-0.1792	0.2305	0.1897	0.2904	0.2043	0.213
-0.3104	0.3104	0.2286	-0.0442	0.2519	-0.1506
+pred	pred_rescaled	pred_mf	enpamgb	deepcpf1	pred_mf_shifted_right	pred_refined_data	pred_refined_comp_data
+0.2274	0.2721	0.2345	0.3517	0.2652	0.2364	0.2224	0.2373
+0.1792	0.2305	0.1897	0.2904	0.2043	0.213	0.1899	0.2004
+0.3104	0.3104	0.2286	-0.0442	0.2519	-0.1506	0.0143	0.0312
