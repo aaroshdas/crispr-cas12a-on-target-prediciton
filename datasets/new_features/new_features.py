@@ -8,10 +8,10 @@ import numpy as np
 # data_path = "NF_Kim_2018_Train.csv"
 
 old_dataset_path = "./quickr_data/"
-old_data_path = "raw_quickr_seqs.csv"
+old_data_path = "cleaner_seqs.csv"
 
 dataset_path = "./quickr_data/"
-data_path = "quickr_seqs_new_features.csv"
+data_path = "cleaner_seqs_new_features.csv"
 # data_path = "quickr_seqs_new_features_shifted_right.csv"
 
 raw_data_df = pd.read_csv(old_dataset_path + old_data_path)
