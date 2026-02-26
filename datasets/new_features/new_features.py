@@ -36,6 +36,14 @@ def gc_content(seq):
 #     pam = seq[pam_start:pam_start+pam_len]
 #     return int(pam[:3] == "TTT")
 
+def find_pam(seq, pam, window=25, default_pos=4):
+    seq = seq.upper()[4:window]
+    pam = pam.upper()
+    for i in range(len(seq)):
+        if seq[i:i+len(pam)] == pam:
+            return i+len(pam)
+    return default_pos
+
 def pam_prox_at_fraction(seq, pam_start=4, pam_len=4, window=10):
     start = pam_start + pam_len
     prox = seq[start:start + window].upper()
@@ -57,6 +65,8 @@ def add_features(df):
     df["pos18_is_c"] = df["Context Sequence"].apply(pos18_is_c)
 
     return df
+
+
 
 
 data_df = add_features(data_df)
